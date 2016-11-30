@@ -1,7 +1,9 @@
-package com.xpf.cateyesmovies;
+package com.xpf.cateyesmovies.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import com.xpf.cateyesmovies.R;
 
 public class MainActivity extends Activity {
 

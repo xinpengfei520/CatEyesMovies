@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_bottom"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#33000000" />
+
+    <RadioGroup
+        android:id="@+id/rg_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_movie"
+            style="@style/RadioButton"
+            android:drawableTop="@drawable/movies_selector"
+            android:text="电影" />
+
+        <RadioButton
+            android:id="@+id/rb_theatre"
+            style="@style/RadioButton"
+            android:drawableTop="@drawable/movietheatre_selector"
+            android:text="影院" />
+
+        <RadioButton
+            android:id="@+id/rb_descover"
+            style="@style/RadioButton"
+            android:drawableTop="@drawable/descover_selector"
+            android:text="发现" />
+
+        <RadioButton
+            android:id="@+id/rb_my"
+            style="@style/RadioButton"
+            android:drawableTop="@drawable/my_selector"
+            android:text="我的" />
+
+    </RadioGroup>
+
+</LinearLayout>
