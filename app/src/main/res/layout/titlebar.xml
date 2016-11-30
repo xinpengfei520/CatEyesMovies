@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tl="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_titleBar"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:background="@color/titleBarColor">
@@ -14,5 +16,19 @@
         android:text="北京"
         android:textColor="@color/white"
         android:textSize="18sp" />
+
+    <com.flyco.tablayout.SegmentTabLayout
+        android:id="@+id/segTabLayout"
+        android:layout_width="180dp"
+        android:layout_height="30dp"
+        android:layout_centerInParent="true"
+        tl:tl_bar_color="#B71F1C"
+        tl:tl_bar_stroke_width="0dp"
+        tl:tl_divider_width="0dp"
+        tl:tl_indicator_anim_enable="true"
+        tl:tl_indicator_color="#FFFFFF"
+        tl:tl_indicator_corner_radius="3dp"
+        tl:tl_textBold="SELECT"
+        tl:tl_textSelectColor="#B71F1C" />
 
 </RelativeLayout>

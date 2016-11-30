@@ -7,12 +7,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xpf.cateyesmovies.R;
@@ -27,15 +24,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends FragmentActivity {
 
     private static final int MESSAGE_BACK = 1;
-    @BindView(R.id.tv_select_city)
-    TextView tvSelectCity;
-    @BindView(R.id.ll_search)
-    LinearLayout llSearch;
     @BindView(R.id.fl_container)
     FrameLayout flContainer;
     @BindView(R.id.rb_movie)
@@ -63,7 +55,6 @@ public class MainActivity extends FragmentActivity {
             }
         }
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,16 +129,6 @@ public class MainActivity extends FragmentActivity {
             return fragments.get(position);
         }
         return null;
-    }
-
-    @OnClick({R.id.tv_select_city, R.id.ll_search})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_select_city: // 城市快速搜索
-                break;
-            case R.id.ll_search: // 电影搜索
-                break;
-        }
     }
 
     @Override

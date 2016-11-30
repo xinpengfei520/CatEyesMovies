@@ -6,6 +6,7 @@
 
     <!-- Custom App Colors / start / -->
     <color name="titleBarColor">#DD403B</color>
+    <color name="tlTitleBarColor">#B71F1C</color>
     <color name="cityItemBg">#F5F5F5</color>
     <color name="white">#FFFFFF</color>
     <color name="radioButtonTextColorPressed">#E7331A</color>
