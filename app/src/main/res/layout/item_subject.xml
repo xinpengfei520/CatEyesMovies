@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="200dp"
     android:orientation="vertical"
     android:padding="10dp">
 
@@ -16,10 +17,10 @@
 
             <ImageView
                 android:id="@+id/iv_figure"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="90dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/default_pic" />
+                android:src="@drawable/default_pic" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -47,7 +48,7 @@
                 android:drawableRight="@drawable/rw"
                 android:text="神奇动物在哪里"
                 android:textColor="@android:color/black"
-                android:textSize="22sp" />
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -58,7 +59,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="观众"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_guanzhong"
@@ -66,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:text="9.0"
                     android:textColor="#FFD974"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <View
                     android:layout_width="1dp"
@@ -78,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="专业"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_zhuanye"
@@ -86,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:text="6.9"
                     android:textColor="#FFD974"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
             <TextView
@@ -94,14 +95,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="神奇动物城,法师显超能"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_changci"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="今天166家影院放映2263场"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -128,7 +129,7 @@
         android:gravity="center"
         android:padding="8dp"
         android:text="麻瓜必备!神奇动物超全资料库"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/tv_zhuanti2"
@@ -139,6 +140,6 @@
         android:gravity="center"
         android:padding="8dp"
         android:text="魔法动物学家纽特·斯卡曼德的前世今生"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
 </LinearLayout>

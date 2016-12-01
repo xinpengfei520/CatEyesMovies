@@ -1,20 +1,27 @@
 package com.xpf.cateyesmovies.fragment;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bumptech.glide.Glide;
 import com.xpf.cateyesmovies.R;
-import com.xpf.cateyesmovies.adapter.HotMoviesAdapter;
+import com.xpf.cateyesmovies.adapter.HotMoviesListViewAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.HotMovieListViewBean;
 import com.xpf.cateyesmovies.domain.HotMovieViewPagerBean;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
+import com.youth.banner.Banner;
+import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerClickListener;
+import com.youth.banner.listener.OnLoadImageListener;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,17 +36,19 @@ import okhttp3.Call;
 
 public class HotMovieFragment extends BaseFragment {
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
+    @BindView(R.id.listView)
+    ListView listView;
+    private Banner banner;
     private List<HotMovieViewPagerBean.DataBean> datas;
-    private HotMoviesAdapter adapter;
     private List<HotMovieListViewBean.DataBean.MoviesBean> moviesBean;
+    private HotMoviesListViewAdapter adapter;
 
     @Override
     protected View initView() {
         Log.e("TAG", "热映页面的布局初始化了");
         View view = View.inflate(mContext, R.layout.fragment_hotmovie, null);
         ButterKnife.bind(this, view);
+
         return view;
     }
 
@@ -47,6 +56,11 @@ public class HotMovieFragment extends BaseFragment {
     public void initData() {
         super.initData();
         Log.e("TAG", "热映页面的数据初始化了");
+
+
+        View bannerView = View.inflate(mContext, R.layout.item_hotviewpager, null);
+        banner = (Banner) bannerView.findViewById(R.id.banner);
+        listView.addHeaderView(bannerView);
 
         getDataFromNet();
     }
@@ -99,7 +113,12 @@ public class HotMovieFragment extends BaseFragment {
         moviesBean = hotMovieListViewBean.getData().getMovies();
 
         if (moviesBean != null && moviesBean.size() > 0) { // 有数据
-            adapter.setMoviesBean(moviesBean);
+            adapter = new HotMoviesListViewAdapter(mContext, moviesBean);
+//            adapter.setMoviesBean(moviesBean);
+            // 设置适配器
+            listView.setAdapter(adapter);
+//            GridLayoutManager manager = new GridLayoutManager(mContext, 1);
+//            recyclerView.setLayoutManager(manager);
         } else {// 没有数据
 
         }
@@ -110,16 +129,40 @@ public class HotMovieFragment extends BaseFragment {
         datas = hotMovieViewPagerBean.getData();
 
         if (datas != null && datas.size() > 0) { // 有数据
-
-            adapter = new HotMoviesAdapter(mContext, datas);
-            // 设置适配器
-            recyclerView.setAdapter(adapter);
-
-            GridLayoutManager manager = new GridLayoutManager(mContext, 1);
-            recyclerView.setLayoutManager(manager);
+            setData();
 
         } else {// 没有数据
 
         }
+    }
+
+    public void setData() {
+        final List<String> imageUrls = new ArrayList<>();
+        if (datas != null && datas.size() > 0) {
+            for (int i = 0; i < datas.size(); i++) {
+                imageUrls.add(datas.get(i).getImgUrl());
+            }
+        }
+
+        // 设置BANNER的切换的样式
+        banner.setBannerAnimation(Transformer.DepthPage);
+        // 设置加载banner的图片显示
+        banner.setImages(imageUrls, new OnLoadImageListener() {
+            @Override
+            public void OnLoadImage(ImageView view, Object url) {
+                // 异步联网请求图片
+                Glide.with(mContext).load(url).into(view);
+            }
+        });
+
+        // 设置banner的点击事件
+        banner.setOnBannerClickListener(new OnBannerClickListener() {
+            @Override
+            public void OnBannerClick(int position) {
+                Toast.makeText(mContext, "position===" + position, Toast.LENGTH_SHORT).show();
+
+                // 预留跳转到详情页面-------------
+            }
+        });
     }
 }
