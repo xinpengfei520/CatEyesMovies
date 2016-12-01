@@ -1,6 +1,7 @@
 package com.xpf.cateyesmovies;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.zhy.http.okhttp.OkHttpUtils;
 
@@ -16,9 +17,16 @@ import okhttp3.OkHttpClient;
 
 public class MyApplication extends Application {
 
+    public static Context mContext;
+
+    public static Context getmContext() {
+        return mContext;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+        mContext = this;
 
         // 初始化okhttpClient
         initOkhttpClient();

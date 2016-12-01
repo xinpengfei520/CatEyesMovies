@@ -1,5 +1,6 @@
 package com.xpf.cateyesmovies.fragment;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.activity.SelectCityActivity;
 import com.xpf.cateyesmovies.common.BaseFragment;
 
 import java.util.ArrayList;
@@ -129,6 +131,7 @@ public class MovieFragment extends BaseFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_select_city:
+                startActivity(new Intent(mContext, SelectCityActivity.class));
                 break;
             case R.id.ll_search:
                 break;

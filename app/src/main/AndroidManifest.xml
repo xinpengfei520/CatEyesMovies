@@ -23,7 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SelectCityActivity"></activity>
+        <activity
+            android:name=".activity.SelectCityActivity"
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>
