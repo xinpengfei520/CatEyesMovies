@@ -1,1 +1,1 @@
-include ':app', ':FlycoTabLayout-master', ':FlycoTabLayout_Lib'
+include ':app', ':FlycoTabLayout-master', ':FlycoTabLayout_Lib', ':banner'

@@ -38,7 +38,7 @@ public class MovieFragment extends BaseFragment {
     @BindView(R.id.ll_search)
     LinearLayout llSearch;
     private String[] tlTitles = {"热映", "待映", "找片"};
-    private List<BaseFragment> fragments = new ArrayList<>();
+    private List<BaseFragment> fragments;
 
     @Override
     protected View initView() {
@@ -58,7 +58,7 @@ public class MovieFragment extends BaseFragment {
     }
 
     private void initFragment() {
-
+        fragments = new ArrayList<>();
         fragments.add(new HotMovieFragment());
         fragments.add(new DelayMovieFragment());
         fragments.add(new FindMovieFragment());
@@ -66,9 +66,10 @@ public class MovieFragment extends BaseFragment {
 
     private void initListener() {
 
+        // 设置ViewPager的适配器
         viewPager.setAdapter(new MyViewPagerAdapter(getFragmentManager()));
 
-        // 设置Tab选择的监听
+        // 设置Tab指示器选择的监听
         segTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelect(int position) {
@@ -81,6 +82,7 @@ public class MovieFragment extends BaseFragment {
             }
         });
 
+        // 设置ViewPager页面改变的监听
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -97,7 +99,7 @@ public class MovieFragment extends BaseFragment {
 
             }
         });
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(0); // 默认在第一页
     }
 
     class MyViewPagerAdapter extends FragmentPagerAdapter {
@@ -113,13 +115,14 @@ public class MovieFragment extends BaseFragment {
 
         @Override
         public int getCount() {
-            return fragments.size();
+            return fragments == null ? 0 : fragments.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             return tlTitles[position];
         }
+
     }
 
     @OnClick({R.id.tv_select_city, R.id.ll_search})
