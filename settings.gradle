@@ -1,3 +1,2 @@
 include ':app', ':FlycoTabLayout_Lib', ':banner'
 include ':HorizontalListView_lib'
-include ':HorizontalListViewSample'
