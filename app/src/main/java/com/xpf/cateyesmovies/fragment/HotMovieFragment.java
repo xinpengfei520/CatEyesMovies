@@ -1,14 +1,18 @@
 package com.xpf.cateyesmovies.fragment;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.activity.SearchActivity;
 import com.xpf.cateyesmovies.adapter.HotMoviesListViewAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.HotMovieListViewBean;
@@ -39,6 +43,7 @@ public class HotMovieFragment extends BaseFragment {
     @BindView(R.id.listView)
     ListView listView;
     private Banner banner;
+    private LinearLayout ll_search;
     private List<HotMovieViewPagerBean.DataBean> datas;
     private List<HotMovieListViewBean.DataBean.MoviesBean> moviesBean;
     private HotMoviesListViewAdapter adapter;
@@ -57,16 +62,54 @@ public class HotMovieFragment extends BaseFragment {
         super.initData();
         Log.e("TAG", "热映页面的数据初始化了");
 
+        // 给ListView添加搜索头布局
+        View searchView = View.inflate(mContext, R.layout.common_search, null);
+        ll_search = (LinearLayout) searchView.findViewById(R.id.ll_search);
+        listView.addHeaderView(searchView);
 
+        // 给ListView添加banner头布局
         View bannerView = View.inflate(mContext, R.layout.item_hotviewpager, null);
         banner = (Banner) bannerView.findViewById(R.id.banner);
         listView.addHeaderView(bannerView);
 
+        initListener();
         getDataFromNet();
+    }
+
+    private void initListener() {
+
+        // 设置搜索框的点击事件
+        ll_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mContext, SearchActivity.class));
+            }
+        });
+
+        // 设置listView滑动的监听
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem != 0) {
+//                    MainActivity mainActivity = new MainActivity();
+//                    mainActivity.setFirstShow(false);
+                    if (onStateChangeListener != null) {
+                        Log.e("TAG", "onScroll()===" + firstVisibleItem);
+                        onStateChangeListener.onChange(true);
+                    }
+                }
+            }
+        });
     }
 
     private void getDataFromNet() {
 
+        // 联网请求banner数据
         OkHttpUtils
                 .get()
                 .url(AppNetConfig.HOTMOVIEVIEWPAGERURL)
@@ -114,11 +157,8 @@ public class HotMovieFragment extends BaseFragment {
 
         if (moviesBean != null && moviesBean.size() > 0) { // 有数据
             adapter = new HotMoviesListViewAdapter(mContext, moviesBean);
-//            adapter.setMoviesBean(moviesBean);
             // 设置适配器
             listView.setAdapter(adapter);
-//            GridLayoutManager manager = new GridLayoutManager(mContext, 1);
-//            recyclerView.setLayoutManager(manager);
         } else {// 没有数据
 
         }
@@ -164,5 +204,17 @@ public class HotMovieFragment extends BaseFragment {
                 // 预留跳转到详情页面-------------
             }
         });
+    }
+
+    private OnStateChangeListener onStateChangeListener;
+
+    public void setOnStateChangeListener(OnStateChangeListener onStateChangeListener) {
+        this.onStateChangeListener = onStateChangeListener;
+    }
+
+    // 状态改变的监听器
+    public interface OnStateChangeListener {
+        // 当状态改变的时候回调
+        void onChange(boolean isChange);
     }
 }

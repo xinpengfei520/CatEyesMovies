@@ -53,7 +53,7 @@ public class HotMoviesListViewAdapter extends BaseAdapter {
 
         ViewHolder holder = null;
         if (convertView == null) {
-            convertView = View.inflate(mContext, R.layout.item_subject, null);
+            convertView = View.inflate(mContext, R.layout.item_hotmovies, null);
             ButterKnife.bind(convertView);
             holder = new ViewHolder(convertView);
             holder.ivFigure = (ImageView) convertView.findViewById(R.id.iv_figure);
@@ -71,6 +71,13 @@ public class HotMoviesListViewAdapter extends BaseAdapter {
         holder.tvTitle.setText(movie.getNm());
         holder.tvChangci.setText(movie.getShowInfo());
         holder.tvJianjie.setText(movie.getScm());
+        if (position == 0) {
+            holder.tvZhuanti1.setVisibility(View.VISIBLE);
+            holder.tvZhuanti2.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvZhuanti1.setVisibility(View.GONE);
+            holder.tvZhuanti2.setVisibility(View.GONE);
+        }
 
         return convertView;
     }

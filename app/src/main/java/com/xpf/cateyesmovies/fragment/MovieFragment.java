@@ -7,12 +7,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.activity.SearchActivity;
 import com.xpf.cateyesmovies.activity.SelectCityActivity;
 import com.xpf.cateyesmovies.common.BaseFragment;
 
@@ -37,10 +38,21 @@ public class MovieFragment extends BaseFragment {
     TextView tvSelectCity;
     @BindView(R.id.segTabLayout)
     SegmentTabLayout segTabLayout;
-    @BindView(R.id.ll_search)
-    LinearLayout llSearch;
+    @BindView(R.id.iv_search)
+    ImageView ivSearch;
     private String[] tlTitles = {"热映", "待映", "找片"};
     private List<BaseFragment> fragments;
+
+    private HotMovieFragment.OnStateChangeListener onStateChangeListener = new HotMovieFragment.OnStateChangeListener() {
+        @Override
+        public void onChange(boolean isChange) {
+            if (isChange) {
+                ivSearch.setVisibility(View.VISIBLE);
+            } else {
+                ivSearch.setVisibility(View.GONE);
+            }
+        }
+    };
 
     @Override
     protected View initView() {
@@ -86,6 +98,7 @@ public class MovieFragment extends BaseFragment {
 
         // 设置ViewPager页面改变的监听
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -127,14 +140,17 @@ public class MovieFragment extends BaseFragment {
 
     }
 
-    @OnClick({R.id.tv_select_city, R.id.ll_search})
+    @OnClick({R.id.tv_select_city, R.id.iv_search})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_select_city:
                 startActivity(new Intent(mContext, SelectCityActivity.class));
                 break;
-            case R.id.ll_search:
+            case R.id.iv_search:
+                startActivity(new Intent(mContext, SearchActivity.class));
                 break;
         }
     }
+
+
 }

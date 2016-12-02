@@ -41,6 +41,16 @@ public class MainActivity extends FragmentActivity {
     @BindView(R.id.rg_main)
     RadioGroup rgMain;
 
+//    private boolean isFirstShow; // 记录ListView的第一条是否显示
+//
+//    public boolean isFirstShow() {
+//        return isFirstShow;
+//    }
+//
+//    public void setFirstShow(boolean firstShow) {
+//        isFirstShow = firstShow;
+//    }
+
     private List<BaseFragment> fragments;
     private int currentPosition = 0; // 默认为位置为0
     private Fragment tempFragment; // 用于存储临时的Fragment
