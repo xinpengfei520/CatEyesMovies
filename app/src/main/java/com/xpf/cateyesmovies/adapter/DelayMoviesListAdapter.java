@@ -61,7 +61,8 @@ public class DelayMoviesListAdapter extends BaseAdapter {
         }
 
         DelayMovieListBean.DataBean.ComingBean comingBean = comingMovieBean.get(position);
-        Glide.with(mContext).load(comingBean.getImg()).into(holder.ivImage);
+//        comingBean.getImg().replace("w.h", "75.100");
+        Glide.with(mContext).load(comingBean.getImg().replace("w.h", "75.100")).into(holder.ivImage);
         holder.tvDate.setText(comingBean.getComingTitle());
         holder.tvName.setText(comingBean.getNm());
 //        holder.tvNumber.setText(comingBean.getWish());

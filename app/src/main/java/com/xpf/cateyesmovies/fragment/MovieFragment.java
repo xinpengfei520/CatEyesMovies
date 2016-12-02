@@ -16,6 +16,7 @@ import com.xpf.cateyesmovies.R;
 import com.xpf.cateyesmovies.activity.SearchActivity;
 import com.xpf.cateyesmovies.activity.SelectCityActivity;
 import com.xpf.cateyesmovies.common.BaseFragment;
+import com.xpf.cateyesmovies.ui.NoScrollViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ import butterknife.OnClick;
 public class MovieFragment extends BaseFragment {
 
     @BindView(R.id.viewPager)
-    ViewPager viewPager;
+    NoScrollViewPager viewPager;
     @BindView(R.id.tv_select_city)
     TextView tvSelectCity;
     @BindView(R.id.segTabLayout)
@@ -101,12 +102,18 @@ public class MovieFragment extends BaseFragment {
 
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                Log.e("TAG", "onPageScrolled===" + position);
             }
 
             @Override
             public void onPageSelected(int position) {
                 segTabLayout.setCurrentTab(position);
+                Log.e("TAG", "onPageSelected()===" + position);
+                if (position == 1) {
+                    viewPager.setNoScroll(true); // 屏蔽滑动
+                } else {
+                    viewPager.setNoScroll(false);
+                }
             }
 
             @Override

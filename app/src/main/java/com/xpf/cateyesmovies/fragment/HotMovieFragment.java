@@ -132,7 +132,7 @@ public class HotMovieFragment extends BaseFragment {
 
         @Override
         public void onResponse(String response, int id) {
-            Log.e("TAG", "联网请求成功===" + response);
+//            Log.e("TAG", "联网请求成功===" + response);
             processData(response);
         }
     }
@@ -146,7 +146,7 @@ public class HotMovieFragment extends BaseFragment {
 
         @Override
         public void onResponse(String response, int id) {
-            Log.e("TAG", "联网请求成功===" + response);
+//            Log.e("TAG", "联网请求成功===" + response);
             processData2(response);
         }
     }
