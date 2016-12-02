@@ -38,7 +38,6 @@ public class DelayMovieFragment extends BaseFragment {
     private BestWishMoiveAdapter bestWishMoiveAdapter;
     private List<DelayMovieListBean.DataBean.ComingBean> comingMovieBean;
     private List<DelayBestWishMovieBean.DataBean.MoviesBean> bestWishmovies;
-//    private NoScrollViewPager noScrollViewPager;
 
     @Override
     protected View initView() {

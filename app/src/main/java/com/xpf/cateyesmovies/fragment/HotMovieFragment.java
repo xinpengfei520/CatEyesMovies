@@ -141,7 +141,7 @@ public class HotMovieFragment extends BaseFragment {
 
         @Override
         public void onError(Call call, Exception e, int id) {
-            Log.e("TAG", "联网请求失败2===" + e.toString());
+            Log.e("TAG", "联网请求失败===" + e.toString());
         }
 
         @Override
