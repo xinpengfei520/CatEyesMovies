@@ -17,6 +17,15 @@
         android:textColor="@color/white"
         android:textSize="18sp" />
 
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="影院"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
     <com.flyco.tablayout.SegmentTabLayout
         android:id="@+id/segTabLayout"
         android:layout_width="180dp"

@@ -16,6 +16,7 @@ import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.FindAwardsMovieBean;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,10 +178,10 @@ public class FindMovieFragment extends BaseFragment {
                 .get()
                 .url(AppNetConfig.FINDMOVIEAWARDSURL)
                 .build()
-                .execute(new StringCallback());
+                .execute(new MyStringCallback());
     }
 
-    class StringCallback extends com.zhy.http.okhttp.callback.StringCallback {
+    class MyStringCallback extends StringCallback {
 
         @Override
         public void onError(Call call, Exception e, int id) {
@@ -200,7 +201,7 @@ public class FindMovieFragment extends BaseFragment {
         FindAwardsMovieBean findAwardsMovieBean = JSONObject.parseObject(json, FindAwardsMovieBean.class);
         awardsDataBean = findAwardsMovieBean.getData();
         if (awardsDataBean != null && awardsDataBean.size() > 0) {
-            awardsMoviesAdapter = new AwardsMoviesAdapter(mContext,awardsDataBean);
+            awardsMoviesAdapter = new AwardsMoviesAdapter(mContext, awardsDataBean);
             hzListView4.setAdapter(awardsMoviesAdapter);
         }
     }

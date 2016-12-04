@@ -44,17 +44,6 @@ public class MovieFragment extends BaseFragment {
     private String[] tlTitles = {"热映", "待映", "找片"};
     private List<BaseFragment> fragments;
 
-    private HotMovieFragment.OnStateChangeListener onStateChangeListener = new HotMovieFragment.OnStateChangeListener() {
-        @Override
-        public void onChange(boolean isChange) {
-            if (isChange) {
-                ivSearch.setVisibility(View.VISIBLE);
-            } else {
-                ivSearch.setVisibility(View.GONE);
-            }
-        }
-    };
-
     @Override
     protected View initView() {
         View view = View.inflate(mContext, R.layout.fragment_movie, null);

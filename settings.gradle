@@ -1,2 +1,3 @@
-include ':app', ':FlycoTabLayout_Lib', ':banner'
+include ':app', ':FlycoTabLayout_Lib', ':banner', ':MaterialRefreshLayout_library'
 include ':HorizontalListView_lib'
+include ':dandy'

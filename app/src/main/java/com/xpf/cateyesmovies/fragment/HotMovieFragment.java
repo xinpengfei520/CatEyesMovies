@@ -1,12 +1,13 @@
 package com.xpf.cateyesmovies.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
@@ -17,6 +18,7 @@ import com.xpf.cateyesmovies.adapter.HotMoviesListViewAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.HotMovieListViewBean;
 import com.xpf.cateyesmovies.domain.HotMovieViewPagerBean;
+import com.xpf.cateyesmovies.ui.update.UpdateListView;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
 import com.youth.banner.Banner;
 import com.youth.banner.Transformer;
@@ -38,15 +40,34 @@ import okhttp3.Call;
  * Function:热映页面的Fragment
  */
 
-public class HotMovieFragment extends BaseFragment {
+public class HotMovieFragment extends BaseFragment implements UpdateListView.UpdateDataListener {
 
     @BindView(R.id.listView)
-    ListView listView;
+    UpdateListView listView;
     private Banner banner;
     private LinearLayout ll_search;
     private List<HotMovieViewPagerBean.DataBean> datas;
     private List<HotMovieListViewBean.DataBean.MoviesBean> moviesBean;
     private HotMoviesListViewAdapter adapter;
+
+    private static final int REFRESH_OK = 0;
+    private static final int LOAD_OK = 1;
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case REFRESH_OK:
+                    moviesBean.clear();
+                    adapter.notifyDataSetChanged();
+                    listView.setCurrentHeaderState(UpdateListView.UpdateViewState.REFRESH_DONE);
+                    listView.refreshViewByRefreshingState();
+                    break;
+                case LOAD_OK:
+                    break;
+            }
+        }
+    };
 
     @Override
     protected View initView() {
@@ -77,6 +98,9 @@ public class HotMovieFragment extends BaseFragment {
     }
 
     private void initListener() {
+
+        // 设置ListView刷新的监听
+        listView.setOnUpdateListener(this);
 
         // 设置搜索框的点击事件
         ll_search.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +145,30 @@ public class HotMovieFragment extends BaseFragment {
                 .url(AppNetConfig.HOTMOVIEURL)
                 .build()
                 .execute(new MyStringCallback2());
+    }
+
+    // 下拉刷新的回调
+    @Override
+    public void refreshing() {
+        new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    sleep(3000);
+                    mHandler.sendEmptyMessage(REFRESH_OK);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.start();
+    }
+
+    // 加载更多的回调
+    @Override
+    public void loading() {
+
     }
 
     class MyStringCallback extends StringCallback {

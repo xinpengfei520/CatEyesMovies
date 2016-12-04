@@ -39,4 +39,5 @@ dependencies {
     compile project(':banner')
     compile project(':FlycoTabLayout_Lib')
     compile project(':HorizontalListView_lib')
+    compile project(':MaterialRefreshLayout_library')
 }
