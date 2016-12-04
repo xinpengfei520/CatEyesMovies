@@ -1,11 +1,10 @@
 package com.xpf.cateyesmovies.fragment;
 
-import android.graphics.Color;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.xpf.cateyesmovies.R;
 import com.xpf.cateyesmovies.common.BaseFragment;
 
 /**
@@ -21,12 +20,8 @@ public class DescoverFragment extends BaseFragment {
     @Override
     protected View initView() {
         Log.e("TAG", "发现页面的布局初始化了");
-        textView = new TextView(mContext);
-        textView.setText("发现页面");
-        textView.setTextColor(Color.RED);
-        textView.setTextSize(30);
-        textView.setGravity(Gravity.CENTER);
-        return textView;
+        View view = View.inflate(mContext, R.layout.fragment_descover, null);
+        return view;
     }
 
     @Override

@@ -10,7 +10,9 @@
     <color name="cityItemBg">#F5F5F5</color>
     <color name="white">#FFFFFF</color>
     <color name="radioButtonTextColorPressed">#E7331A</color>
+    <color name="ButtonTextColorPressed">#E7331A</color>
     <color name="radioButtonTextColorNormal">#6A6767</color>
+    <color name="ButtonTextColorNormal">#6A6767</color>
     <color name="radioGroupBg">#F6F6F6</color>
     <color name="goldenNumber">#FFD974</color>
 
