@@ -114,6 +114,9 @@ public class AppNetConfig {
     // 超能陆战队内容页面头部
     public static final String CHAONENGHEAD = "http://api.maoyan.com/mmdb/movie/v5/79232.json?token=&utm_campaign=AmovieBmovieCD-1&movieBundleVersion=6801&utm_source=goapk&utm_medium=android&utm_term=6.8.0&utm_content=867450";
 
+    // 发现页面顶部四个图片的url
+    public static final String FINDFOURPICTURE = "http://api.maoyan.com/sns/v2/buttons.json?utm_campaign=AmovieBmovieCD-1&movieBundleVersion=7501&utm_source=meizu&utm_medium=android&utm_term=7.5.0&utm_content=863026033265878&ci=1&net=255&dModel=MX6&uuid=994B6356168870DBECA2906DD60DA83112D01C68424B04080D0EC60E7BE0D962&lat=40.101338&lng=116.378614&__reqTraceID=2725691099374865664&refer=%2FTopicDetailActivity&__skck=6a375bce8c66a0dc293860dfa83833ef&__skts=1480920322432&__skua=32bcf146c756ecefe7535b95816908e3&__skno=2d11b39b-c932-44a6-be7e-05df706d9e6d&__skcy=mCYGMThkILKYHx6go6VA11WaDwI%3D";
+
     /**
      * 敢死队3的图片: http://p0.meituan.net/movie/7659393df8997cd8ee84428062b41276336380.jpg.webp@230w_320h_1e_1c_1l
      超能陆战队的内容页面的评论:http://api.maoyan.com/mmdb/comments/movie/v2/78488.json?token=&offset=0&limit=15&tag=0&utm_campaign=AmovieBmovieCD-1&movieBundleVersion=6801&utm_source=goapk&utm_medium=android&
@@ -128,19 +131,20 @@ public class AppNetConfig {
      •	服务类型：http
      •	接口位置：
      •	调用位置：
-     •	接口地址：http://m.maoyan.com/newGuide/maoyanpiaofang?f=nohdft
+     •	接口地址：http://m.maoyan.com/newGuide/maoyanpiaofang?f=nohdft*/
 
-     radioButton下listView数据调用接口
-     •	功能说明：radioButton下listView数据调用接口
-     •	服务类型：http
-     •	接口位置：
-     •	调用位置：
-     •	接口地址：http://api.meituan.com/sns/v2/feed.json?offset=0&limit=10&timestamp=0&__vhost=api.maoyan.com&utm_campaign=AmovieBmovieC110189035496448D-1&movieBundleVersion=6801&utm_source=baidumobile1&utm_medium=android&utm_term=6.8.0&utm_content=863777020121611&ci=1&net=255
+    /**
+     * radioButton下listView数据调用接口
+     * 功能说明：radioButton下listView数据调用接口
+     * 服务类型：http
+     * 接口位置：
+     * 调用位置：
+     * 接口地址：
+     */
+    public static final String DESCOVERLISTDATA = "http://api.meituan.com/sns/v2/feed.json?offset=0&limit=10&timestamp=0&__vhost=api.maoyan.com&utm_campaign=AmovieBmovieC110189035496448D-1&movieBundleVersion=6801&utm_source=baidumobile1&utm_medium=android&utm_term=6.8.0&utm_content=863777020121611&ci=1&net=255";
 
-     我的
 
-     商城：
-
+    /**我的商城：
      •	功能说明：上面viewpager  数据获取接口
      •	服务类型：http
      •	接口位置： 最顶上
