@@ -9,7 +9,7 @@
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:background="#99FF0000"
+        android:background="@color/titleBarColor"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -30,8 +30,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:text="选择城市"
             android:textColor="#ffffff"
             android:textSize="20sp" />
