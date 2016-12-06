@@ -1,12 +1,15 @@
 package com.xpf.cateyesmovies.fragment;
 
+import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.activity.SearchActivity;
 import com.xpf.cateyesmovies.adapter.DescoverListDataAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.DescoverListBean;
@@ -18,6 +21,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import okhttp3.Call;
 
 
@@ -31,6 +35,8 @@ public class DescoverFragment extends BaseFragment {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.ll_search)
+    LinearLayout llSearch;
     private List<DescoverListBean.DataBean.FeedsBean> feedsBeanList;
     private DescoverListDataAdapter descoverListDataAdapter;
 
@@ -55,6 +61,11 @@ public class DescoverFragment extends BaseFragment {
                 .url(AppNetConfig.DESCOVERLISTDATA)
                 .build()
                 .execute(new MyStringCallBack());
+    }
+
+    @OnClick(R.id.ll_search)
+    public void onClick() {
+        startActivity(new Intent(mContext, SearchActivity.class));
     }
 
     class MyStringCallBack extends StringCallback {

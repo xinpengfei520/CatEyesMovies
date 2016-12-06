@@ -1,17 +1,21 @@
 package com.xpf.cateyesmovies.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.activity.SevenTypeDetailsActivity;
+import com.xpf.cateyesmovies.activity.TwoTypeDetailsActivity;
 import com.xpf.cateyesmovies.domain.DescoverListBean;
 import com.xpf.cateyesmovies.domain.FindFourPictureBean;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
@@ -204,6 +208,8 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
         TextView tvLooked;
         @BindView(R.id.tv_today)
         TextView tvToday;
+        @BindView(R.id.ll_seven)
+        LinearLayout llSeven;
 
         public TypeSevenViewHolder(Context mContext, View itemView) {
             super(itemView);
@@ -211,7 +217,7 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
             this.mContext = mContext;
         }
 
-        public void setData(DescoverListBean.DataBean.FeedsBean feedsBean, int position) {
+        public void setData(final DescoverListBean.DataBean.FeedsBean feedsBean, final int position) {
             Glide.with(mContext).load(feedsBean.getImages().get(0).getUrl()).into(ivFigure);
             tvTitle.setText(feedsBean.getTitle());
             tvCategory.setText(feedsBean.getUser().getNickName());
@@ -222,6 +228,16 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
             } else {
                 tvToday.setVisibility(View.GONE);
             }
+
+            // 给Item设置点击事件
+            llSeven.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, SevenTypeDetailsActivity.class);
+                    intent.putExtra("url", feedsBean.getUrl());
+                    mContext.startActivity(intent);
+                }
+            });
         }
     }
 
@@ -242,6 +258,8 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
         TextView tvLooked;
         @BindView(R.id.tv_today)
         TextView tvToday;
+        @BindView(R.id.ll_two)
+        LinearLayout llTwo;
 
         public TypeTwoViewHolder(Context mContext, View itemView) {
             super(itemView);
@@ -249,7 +267,7 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
             this.mContext = mContext;
         }
 
-        public void setData(DescoverListBean.DataBean.FeedsBean feedsBean, int position) {
+        public void setData(final DescoverListBean.DataBean.FeedsBean feedsBean, int position) {
             tvTitle.setText(feedsBean.getTitle());
             Glide.with(mContext).load(feedsBean.getImages().get(0).getUrl()).into(ivImg1);
             Glide.with(mContext).load(feedsBean.getImages().get(1).getUrl()).into(ivImg2);
@@ -261,6 +279,18 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
             } else {
                 tvToday.setVisibility(View.GONE);
             }
+
+            // 设置feedType = 2的点击事件
+            llTwo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    // 考虑将整个bean对象传递过去,通过获取其feedType来加载对应的url(类型不同url不同)
+                    Intent intent = new Intent(mContext, TwoTypeDetailsActivity.class);
+                    intent.putExtra("url", feedsBean.getUrl());
+                    mContext.startActivity(intent);
+                }
+            });
         }
     }
 

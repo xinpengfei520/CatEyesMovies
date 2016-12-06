@@ -129,17 +129,12 @@ public class AppNetConfig {
 
      •	功能说明：RadioButton中 票房 数据获取接口
      •	服务类型：http
-     •	接口位置：
-     •	调用位置：
      •	接口地址：http://m.maoyan.com/newGuide/maoyanpiaofang?f=nohdft*/
 
     /**
      * radioButton下listView数据调用接口
      * 功能说明：radioButton下listView数据调用接口
      * 服务类型：http
-     * 接口位置：
-     * 调用位置：
-     * 接口地址：
      */
     public static final String DESCOVERLISTDATA = "http://api.meituan.com/sns/v2/feed.json?offset=0&limit=10&timestamp=0&__vhost=api.maoyan.com&utm_campaign=AmovieBmovieC110189035496448D-1&movieBundleVersion=6801&utm_source=baidumobile1&utm_medium=android&utm_term=6.8.0&utm_content=863777020121611&ci=1&net=255";
 
