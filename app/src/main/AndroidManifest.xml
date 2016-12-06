@@ -59,6 +59,11 @@
         <activity android:name=".activity.SevenTypeDetailsActivity" />
         <activity android:name=".activity.TwoTypeDetailsActivity" />
         <activity android:name=".activity.ImageTextActivity" />
+        <activity android:name=".activity.MovieDetailsActivity" />
+        <activity android:name=".activity.MoviesH5Activity" />
+        <activity
+            android:name=".activity.BannerDetailActivity"
+            android:hardwareAccelerated="true" />
     </application>
 
 </manifest>

@@ -8,11 +8,11 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.activity.BannerDetailActivity;
 import com.xpf.cateyesmovies.activity.SearchActivity;
 import com.xpf.cateyesmovies.adapter.HotMoviesListViewAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
@@ -120,8 +120,6 @@ public class HotMovieFragment extends BaseFragment implements UpdateListView.Upd
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (firstVisibleItem != 0) {
-//                    MainActivity mainActivity = new MainActivity();
-//                    mainActivity.setFirstShow(false);
                     if (onStateChangeListener != null) {
                         Log.e("TAG", "onScroll()===" + firstVisibleItem);
                         onStateChangeListener.onChange(true);
@@ -207,7 +205,7 @@ public class HotMovieFragment extends BaseFragment implements UpdateListView.Upd
             adapter = new HotMoviesListViewAdapter(mContext, moviesBean);
             // 设置适配器
             listView.setAdapter(adapter);
-        } else {// 没有数据
+        } else { // 没有数据
 
         }
     }
@@ -218,7 +216,6 @@ public class HotMovieFragment extends BaseFragment implements UpdateListView.Upd
 
         if (datas != null && datas.size() > 0) { // 有数据
             setData();
-
         } else {// 没有数据
 
         }
@@ -247,9 +244,10 @@ public class HotMovieFragment extends BaseFragment implements UpdateListView.Upd
         banner.setOnBannerClickListener(new OnBannerClickListener() {
             @Override
             public void OnBannerClick(int position) {
-                Toast.makeText(mContext, "position===" + position, Toast.LENGTH_SHORT).show();
-
-                // 预留跳转到详情页面-------------
+                // 跳转到详情页面
+                Intent intent = new Intent(mContext, BannerDetailActivity.class);
+                intent.putExtra("url", datas.get(position - 1).getUrl());
+                startActivity(intent);
             }
         });
     }

@@ -1,15 +1,18 @@
 package com.xpf.cateyesmovies.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.activity.MoviesH5Activity;
 import com.xpf.cateyesmovies.domain.HotMovieListViewBean;
 
 import java.util.List;
@@ -65,7 +68,7 @@ public class HotMoviesListViewAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        HotMovieListViewBean.DataBean.MoviesBean movie = moviesBean.get(position);
+        final HotMovieListViewBean.DataBean.MoviesBean movie = moviesBean.get(position);
         Log.e("TAG", "movieBeanSize===" + moviesBean.size());
         Glide.with(mContext).load(movie.getImg()).into(holder.ivFigure);
         holder.tvTitle.setText(movie.getNm());
@@ -78,6 +81,16 @@ public class HotMoviesListViewAdapter extends BaseAdapter {
             holder.tvZhuanti1.setVisibility(View.GONE);
             holder.tvZhuanti2.setVisibility(View.GONE);
         }
+
+        // Item的点击事件
+        holder.llHotMovieItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MoviesH5Activity.class);
+                intent.putExtra("url", movie.getId() + "");
+                mContext.startActivity(intent);
+            }
+        });
 
         return convertView;
     }
@@ -101,6 +114,8 @@ public class HotMoviesListViewAdapter extends BaseAdapter {
         TextView tvZhuanti1;
         @BindView(R.id.tv_zhuanti2)
         TextView tvZhuanti2;
+        @BindView(R.id.ll_hotMovieItem)
+        LinearLayout llHotMovieItem;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
