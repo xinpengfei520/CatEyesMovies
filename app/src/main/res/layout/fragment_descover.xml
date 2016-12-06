@@ -6,9 +6,16 @@
 
     <include layout="@layout/common_search" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <com.xpf.cateyesmovies.ui.update.CustomSwipeRefreshLayout
+        android:id="@+id/refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.xpf.cateyesmovies.ui.update.CustomSwipeRefreshLayout>
 
 </LinearLayout>

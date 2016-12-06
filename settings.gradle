@@ -1,3 +1,2 @@
-include ':app', ':FlycoTabLayout_Lib', ':banner', ':MaterialRefreshLayout_library', ':ViewPagerIndicator_library'
+include ':app', ':FlycoTabLayout_Lib', ':banner', ':MaterialRefreshLayout_library', ':ViewPagerIndicator_library', ':CatEyesRefresh_lib'
 include ':HorizontalListView_lib'
-include ':dandy'

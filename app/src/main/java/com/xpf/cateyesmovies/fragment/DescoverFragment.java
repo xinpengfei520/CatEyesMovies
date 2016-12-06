@@ -1,6 +1,7 @@
 package com.xpf.cateyesmovies.fragment;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +14,8 @@ import com.xpf.cateyesmovies.activity.SearchActivity;
 import com.xpf.cateyesmovies.adapter.DescoverListDataAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.DescoverListBean;
+import com.xpf.cateyesmovies.ui.update.CustomProgressDrawable;
+import com.xpf.cateyesmovies.ui.update.CustomSwipeRefreshLayout;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -37,6 +40,8 @@ public class DescoverFragment extends BaseFragment {
     RecyclerView recyclerView;
     @BindView(R.id.ll_search)
     LinearLayout llSearch;
+    @BindView(R.id.refresh)
+    CustomSwipeRefreshLayout refresh;
     private List<DescoverListBean.DataBean.FeedsBean> feedsBeanList;
     private DescoverListDataAdapter descoverListDataAdapter;
 
@@ -52,7 +57,28 @@ public class DescoverFragment extends BaseFragment {
     public void initData() {
         super.initData();
         Log.e("TAG", "发现页面的数据初始化了");
+        initListener();
         getDataFromNet();
+    }
+
+    private void initListener() {
+        CustomProgressDrawable mprogressview = new CustomProgressDrawable(mContext, refresh);
+        mprogressview.setProgressResource(mContext, R.drawable.a_a);
+
+        refresh.setProgressView(mprogressview, R.drawable.progress_bg);
+        refresh.setOnRefreshListener(new CustomSwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refresh.isRefreshing()) {
+                            refresh.setRefreshing(false);
+                        }
+                    }
+                }, 3000);
+            }
+        });
     }
 
     private void getDataFromNet() {

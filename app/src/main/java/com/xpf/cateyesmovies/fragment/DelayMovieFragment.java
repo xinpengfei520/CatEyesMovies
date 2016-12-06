@@ -1,5 +1,6 @@
 package com.xpf.cateyesmovies.fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -12,6 +13,8 @@ import com.xpf.cateyesmovies.adapter.DelayMoviesListAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.DelayBestWishMovieBean;
 import com.xpf.cateyesmovies.domain.DelayMovieListBean;
+import com.xpf.cateyesmovies.ui.update.CustomProgressDrawable;
+import com.xpf.cateyesmovies.ui.update.CustomSwipeRefreshLayout;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -32,6 +35,8 @@ public class DelayMovieFragment extends BaseFragment {
 
     @BindView(R.id.lv_delay)
     ListView lvDelay;
+    @BindView(R.id.refresh)
+    CustomSwipeRefreshLayout refresh;
     private ListView lv_recommend;
     private HorizontalListView lv_bestWish;
     private DelayMoviesListAdapter delayMoviesListAdapter;
@@ -67,7 +72,31 @@ public class DelayMovieFragment extends BaseFragment {
         // 设置当lv_bestWish滑动到第一个或者最后一个的时候取消ViewPager屏蔽
         // 应该考虑滑动的方向和滑动的变量,参考“北京新闻”中的处理
 
+        initListener();
         getDelayDataFromNet();
+    }
+
+    private void initListener() {
+        CustomProgressDrawable mprogressview = new CustomProgressDrawable(mContext, refresh);
+        mprogressview.setProgressResource(mContext, R.drawable.a_a);
+
+        refresh.setProgressView(mprogressview, R.drawable.progress_bg);
+        refresh.setOnRefreshListener(new CustomSwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                comingMovieBean.clear();
+                delayMoviesListAdapter.notifyDataSetChanged();
+                getDelayDataFromNet();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refresh.isRefreshing()) {
+                            refresh.setRefreshing(false);
+                        }
+                    }
+                }, 3000);
+            }
+        });
     }
 
     // 联网获取待映数据

@@ -1,6 +1,5 @@
 package com.xpf.cateyesmovies.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
@@ -8,6 +7,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
@@ -18,7 +18,8 @@ import com.xpf.cateyesmovies.adapter.HotMoviesListViewAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.HotMovieListViewBean;
 import com.xpf.cateyesmovies.domain.HotMovieViewPagerBean;
-import com.xpf.cateyesmovies.ui.update.UpdateListView;
+import com.xpf.cateyesmovies.ui.update.CustomProgressDrawable;
+import com.xpf.cateyesmovies.ui.update.CustomSwipeRefreshLayout;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
 import com.youth.banner.Banner;
 import com.youth.banner.Transformer;
@@ -40,41 +41,23 @@ import okhttp3.Call;
  * Function:热映页面的Fragment
  */
 
-public class HotMovieFragment extends BaseFragment implements UpdateListView.UpdateDataListener {
+public class HotMovieFragment extends BaseFragment {
 
     @BindView(R.id.listView)
-    UpdateListView listView;
+    ListView listView;
+    @BindView(R.id.refresh)
+    CustomSwipeRefreshLayout refresh;
     private Banner banner;
     private LinearLayout ll_search;
     private List<HotMovieViewPagerBean.DataBean> datas;
     private List<HotMovieListViewBean.DataBean.MoviesBean> moviesBean;
     private HotMoviesListViewAdapter adapter;
 
-    private static final int REFRESH_OK = 0;
-    private static final int LOAD_OK = 1;
-
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case REFRESH_OK:
-                    moviesBean.clear();
-                    adapter.notifyDataSetChanged();
-                    listView.setCurrentHeaderState(UpdateListView.UpdateViewState.REFRESH_DONE);
-                    listView.refreshViewByRefreshingState();
-                    break;
-                case LOAD_OK:
-                    break;
-            }
-        }
-    };
-
     @Override
     protected View initView() {
         Log.e("TAG", "热映页面的布局初始化了");
         View view = View.inflate(mContext, R.layout.fragment_hotmovie, null);
         ButterKnife.bind(this, view);
-
         return view;
     }
 
@@ -99,8 +82,26 @@ public class HotMovieFragment extends BaseFragment implements UpdateListView.Upd
 
     private void initListener() {
 
-        // 设置ListView刷新的监听
-        listView.setOnUpdateListener(this);
+        CustomProgressDrawable mprogressview = new CustomProgressDrawable(mContext, refresh);
+        mprogressview.setProgressResource(mContext, R.drawable.a_a);
+
+        refresh.setProgressView(mprogressview, R.drawable.progress_bg);
+        refresh.setOnRefreshListener(new CustomSwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                datas.clear();
+                adapter.notifyDataSetChanged();
+//                getDataFromNet();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refresh.isRefreshing()) {
+                            refresh.setRefreshing(false);
+                        }
+                    }
+                }, 3000);
+            }
+        });
 
         // 设置搜索框的点击事件
         ll_search.setOnClickListener(new View.OnClickListener() {
@@ -145,30 +146,6 @@ public class HotMovieFragment extends BaseFragment implements UpdateListView.Upd
                 .execute(new MyStringCallback2());
     }
 
-    // 下拉刷新的回调
-    @Override
-    public void refreshing() {
-        new Thread() {
-
-            @Override
-            public void run() {
-                try {
-                    sleep(3000);
-                    mHandler.sendEmptyMessage(REFRESH_OK);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }.start();
-    }
-
-    // 加载更多的回调
-    @Override
-    public void loading() {
-
-    }
-
     class MyStringCallback extends StringCallback {
 
         @Override
@@ -194,6 +171,7 @@ public class HotMovieFragment extends BaseFragment implements UpdateListView.Upd
         public void onResponse(String response, int id) {
 //            Log.e("TAG", "联网请求成功===" + response);
             processData2(response);
+
         }
     }
 

@@ -3,13 +3,13 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CatEyesMovies.iml" filepath="$PROJECT_DIR$/CatEyesMovies.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CatEyesRefresh_lib/CatEyesRefresh_lib.iml" filepath="$PROJECT_DIR$/CatEyesRefresh_lib/CatEyesRefresh_lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/FlycoTabLayout_Lib/FlycoTabLayout_Lib.iml" filepath="$PROJECT_DIR$/FlycoTabLayout_Lib/FlycoTabLayout_Lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/HorizontalListView_lib/HorizontalListView_lib.iml" filepath="$PROJECT_DIR$/HorizontalListView_lib/HorizontalListView_lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/MaterialRefreshLayout_library/MaterialRefreshLayout_library.iml" filepath="$PROJECT_DIR$/MaterialRefreshLayout_library/MaterialRefreshLayout_library.iml" />
       <module fileurl="file://$PROJECT_DIR$/ViewPagerIndicator_library/ViewPagerIndicator_library.iml" filepath="$PROJECT_DIR$/ViewPagerIndicator_library/ViewPagerIndicator_library.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/banner/banner.iml" filepath="$PROJECT_DIR$/banner/banner.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dandy/dandy.iml" filepath="$PROJECT_DIR$/dandy/dandy.iml" />
     </modules>
   </component>
 </project>
