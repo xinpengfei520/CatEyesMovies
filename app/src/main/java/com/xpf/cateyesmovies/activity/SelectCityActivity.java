@@ -31,6 +31,9 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.adapter.HitCityAdapter;
+import com.xpf.cateyesmovies.adapter.HotCityAdapter;
+import com.xpf.cateyesmovies.adapter.ResultListAdapter;
 import com.xpf.cateyesmovies.domain.CityBean;
 import com.xpf.cateyesmovies.ui.MyLetterListView;
 import com.xpf.cateyesmovies.utils.DBHelper;
@@ -70,23 +73,20 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
     private BaseAdapter adapter;
     private ResultListAdapter resultListAdapter;
     private TextView overlay; // 对话框首字母textview
-    private HashMap<String, Integer> alphaIndexer;// 存放存在的汉语拼音首字母和与之对应的列表位置
+    private HashMap<String, Integer> alphaIndexer; // 存放存在的汉语拼音首字母和与之对应的列表位置
     private String[] sections;// 存放存在的汉语拼音首字母
     private Handler handler;
     private OverlayThread overlayThread; // 显示首字母对话框
     private ArrayList<CityBean> allCity_Bean_lists; // 所有城市列表
-    private ArrayList<CityBean> city_Bean_lists;// 城市列表
+    private ArrayList<CityBean> city_Bean_lists;    // 城市列表
     private ArrayList<CityBean> city_Bean_hot;
     private ArrayList<CityBean> city_Bean_result;
     private ArrayList<String> city_history;
-
     private LocationClient mLocationClient;
     private MyLocationListener mMyLocationListener;
-
-    private String currentCity; // 用于保存定位到的城市
+    private String currentCity;    // 用于保存定位到的城市
     private int locateProcess = 1; // 记录当前定位的状态 正在定位-定位成功-定位失败
     private boolean isNeedFresh;
-
     private DatabaseHelper helper;
 
     @Override
@@ -100,6 +100,8 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
         city_Bean_result = new ArrayList<CityBean>();
         city_history = new ArrayList<String>();
         helper = new DatabaseHelper(this);
+
+        // 设置文本变化的监听器
         sh.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -136,6 +138,8 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
 
             }
         });
+
+        // 设置字母索引View的触摸事件的监听
         letterListView
                 .setOnTouchingLetterChangedListener(new LetterListViewListener());
         alphaIndexer = new HashMap<String, Integer>();
@@ -148,10 +152,8 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 if (position >= 4) {
-
                     Toast.makeText(getApplicationContext(),
-                            allCity_Bean_lists.get(position).getName(),
-                            Toast.LENGTH_SHORT).show();
+                            allCity_Bean_lists.get(position).getName(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -160,14 +162,14 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
         personList.setOnScrollListener(this);
         resultListAdapter = new ResultListAdapter(this, city_Bean_result);
         resultList.setAdapter(resultListAdapter);
+        // 设置Item的点击事件
         resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Toast.makeText(getApplicationContext(),
-                        city_Bean_result.get(position).getName(), Toast.LENGTH_SHORT)
-                        .show();
+                        city_Bean_result.get(position).getName(), Toast.LENGTH_SHORT).show();
             }
         });
         initOverlay();
@@ -175,8 +177,11 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
         hotCityInit();
         hisCityInit();
         adapter = new ListAdapter(this, allCity_Bean_lists, city_Bean_hot, city_history);
+//        adapter = new ListAdapter(this, allCity_Bean_lists, city_Bean_hot, city_history,
+//                alphaIndexer, locateProcess, personList, currentCity, mLocationClient, isNeedFresh, adapter);
         personList.setAdapter(adapter);
 
+        // 初始化百度地图相关的客户端和注册监听
         mLocationClient = new LocationClient(getApplicationContext());
         mMyLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(mMyLocationListener);
@@ -204,18 +209,18 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
     private void initLocation() {
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
-        );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
-        option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
+        ); // 可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        option.setCoorType("bd09ll");  // 可选，默认gcj02，设置返回的定位结果坐标系
         int span = 1000;
-        option.setScanSpan(span);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
-        option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
-        option.setOpenGps(true);//可选，默认false,设置是否使用gps
-        option.setLocationNotify(true);//可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
-        option.setIsNeedLocationDescribe(true);//可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
-        option.setIsNeedLocationPoiList(true);//可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
-        option.setIgnoreKillProcess(false);//可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
-        option.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
-        option.setEnableSimulateGps(false);//可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+        option.setScanSpan(span);      // 可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setIsNeedAddress(true); // 可选，设置是否需要地址信息，默认不需要
+        option.setOpenGps(true);       // 可选，默认false,设置是否使用gps
+        option.setLocationNotify(true);// 可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+        option.setIsNeedLocationDescribe(true); // 可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
+        option.setIsNeedLocationPoiList(true);  // 可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        option.setIgnoreKillProcess(false);     // 可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+        option.SetIgnoreCacheException(false);  // 可选，默认false，设置是否收集CRASH信息，默认收集
+        option.setEnableSimulateGps(false);     // 可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
         mLocationClient.setLocOption(option);
     }
 
@@ -335,41 +340,12 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
         }
     };
 
-    /**
-     * 实现定位回调监听
-     */
-//    public class MyLocationListener implements BDLocationListener {
-//
-//        @Override
-//        public void onReceiveLocation(BDLocation arg0) {
-//            Log.e("info", "city = " + arg0.getCity());
-//            if (!isNeedFresh) {
-//                return;
-//            }
-//            isNeedFresh = false;
-//            if (arg0.getCity() == null) {
-//                locateProcess = 3; // 定位失败
-//                personList.setAdapter(adapter);
-//                adapter.notifyDataSetChanged();
-//                return;
-//            }
-//            currentCity = arg0.getCity().substring(0,
-//                    arg0.getCity().length() - 1);
-//            locateProcess = 2; // 定位成功
-//            personList.setAdapter(adapter);
-//            adapter.notifyDataSetChanged();
-//        }
-//
-////        @Override
-////        public void onReceivePoi(BDLocation arg0) {
-////
-////        }
-//    }
+    // 实现定位回调监听
     public class MyLocationListener implements BDLocationListener {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
-            //Receive Location
+            // Receive Location
             StringBuffer sb = new StringBuffer(256);
             sb.append("time : ");
             sb.append(location.getTime());
@@ -398,7 +374,7 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
             } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {// 网络定位结果
                 sb.append("\naddr : ");
                 sb.append(location.getAddrStr());
-                //运营商信息
+                // 运营商信息
                 sb.append("\noperationers : ");
                 sb.append(location.getOperators());
                 sb.append("\ndescribe : ");
@@ -428,7 +404,6 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
                 }
             }
             Log.e("BaiduLocationApiDem", sb.toString());
-
             Log.e("info", "city = " + location.getCity());
             if (!isNeedFresh) {
                 return;
@@ -445,51 +420,6 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
             locateProcess = 2; // 定位成功
             personList.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-        }
-    }
-
-    private class ResultListAdapter extends BaseAdapter {
-        private LayoutInflater inflater;
-        private ArrayList<CityBean> results = new ArrayList<CityBean>();
-
-        public ResultListAdapter(Context context, ArrayList<CityBean> results) {
-            inflater = LayoutInflater.from(context);
-            this.results = results;
-        }
-
-        @Override
-        public int getCount() {
-            return results.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder viewHolder = null;
-            if (convertView == null) {
-                convertView = inflater.inflate(R.layout.list_item, null);
-                viewHolder = new ViewHolder();
-                viewHolder.name = (TextView) convertView
-                        .findViewById(R.id.name);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
-            }
-            viewHolder.name.setText(results.get(position).getName());
-            return convertView;
-        }
-
-        class ViewHolder {
-            TextView name;
         }
     }
 
@@ -560,14 +490,13 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
                 TextView locateHint = (TextView) convertView
                         .findViewById(R.id.locateHint);
                 city = (TextView) convertView.findViewById(R.id.lng_city);
+                // 设置City的点击事件
                 city.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (locateProcess == 2) {
-
                             Toast.makeText(getApplicationContext(),
-                                    city.getText().toString(),
-                                    Toast.LENGTH_SHORT).show();
+                                    city.getText().toString(), Toast.LENGTH_SHORT).show();
                         } else if (locateProcess == 3) {
                             locateProcess = 1;
                             personList.setAdapter(adapter);
@@ -609,30 +538,22 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
-
                         Toast.makeText(getApplicationContext(),
-                                city_history.get(position), Toast.LENGTH_SHORT)
-                                .show();
-
+                                city_history.get(position), Toast.LENGTH_SHORT).show();
                     }
                 });
-                TextView recentHint = (TextView) convertView
-                        .findViewById(R.id.recentHint);
+                TextView recentHint = (TextView) convertView.findViewById(R.id.recentHint);
                 recentHint.setText("最近访问的城市");
             } else if (viewType == 2) {
                 convertView = inflater.inflate(R.layout.recent_city, null);
-                GridView hotCity = (GridView) convertView
-                        .findViewById(R.id.recent_city);
+                GridView hotCity = (GridView) convertView.findViewById(R.id.recent_city);
                 hotCity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
-
                         Toast.makeText(getApplicationContext(),
-                                city_Bean_hot.get(position).getName(),
-                                Toast.LENGTH_SHORT).show();
-
+                                city_Bean_hot.get(position).getName(), Toast.LENGTH_SHORT).show();
                     }
                 });
                 hotCity.setAdapter(new HotCityAdapter(context, this.hotList));
@@ -675,80 +596,36 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
         }
     }
 
+    // 获得汉语拼音首字母
+    public String getAlpha(String str) {
+        if (str == null) {
+            return "#";
+        }
+        if (str.trim().length() == 0) {
+            return "#";
+        }
+        char c = str.trim().substring(0, 1).charAt(0);
+        // 正则表达式，判断首字母是否是英文字母
+        Pattern pattern = Pattern.compile("^[A-Za-z]+$");
+        if (pattern.matcher(c + "").matches()) {
+            return (c + "").toUpperCase();
+        } else if (str.equals("0")) {
+            return "定位";
+        } else if (str.equals("1")) {
+            return "最近";
+        } else if (str.equals("2")) {
+            return "热门";
+        } else if (str.equals("3")) {
+            return "全部";
+        } else {
+            return "#";
+        }
+    }
+
     @Override
     protected void onStop() {
-        mLocationClient.stop();
+        mLocationClient.stop(); // 停止百度地图服务,释放资源
         super.onStop();
-    }
-
-    class HotCityAdapter extends BaseAdapter {
-        private Context context;
-        private LayoutInflater inflater;
-        private List<CityBean> hotCityBeen;
-
-        public HotCityAdapter(Context context, List<CityBean> hotCityBeen) {
-            this.context = context;
-            inflater = LayoutInflater.from(this.context);
-            this.hotCityBeen = hotCityBeen;
-        }
-
-        @Override
-        public int getCount() {
-            return hotCityBeen.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = inflater.inflate(R.layout.item_city, null);
-            TextView city = (TextView) convertView.findViewById(R.id.cityBean);
-            city.setText(hotCityBeen.get(position).getName());
-            return convertView;
-        }
-    }
-
-    class HitCityAdapter extends BaseAdapter {
-        private Context context;
-        private LayoutInflater inflater;
-        private List<String> hotCitys;
-
-        public HitCityAdapter(Context context, List<String> hotCitys) {
-            this.context = context;
-            inflater = LayoutInflater.from(this.context);
-            this.hotCitys = hotCitys;
-        }
-
-        @Override
-        public int getCount() {
-            return hotCitys.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = inflater.inflate(R.layout.item_city, null);
-            TextView city = (TextView) convertView.findViewById(R.id.cityBean);
-            city.setText(hotCitys.get(position));
-            return convertView;
-        }
     }
 
     private boolean mReady;
@@ -798,32 +675,33 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
         }
     }
 
-    // 获得汉语拼音首字母
-    private String getAlpha(String str) {
-        if (str == null) {
-            return "#";
-        }
-        if (str.trim().length() == 0) {
-            return "#";
-        }
-        char c = str.trim().substring(0, 1).charAt(0);
-        // 正则表达式，判断首字母是否是英文字母
-        Pattern pattern = Pattern.compile("^[A-Za-z]+$");
-        if (pattern.matcher(c + "").matches()) {
-            return (c + "").toUpperCase();
-        } else if (str.equals("0")) {
-            return "定位";
-        } else if (str.equals("1")) {
-            return "最近";
-        } else if (str.equals("2")) {
-            return "热门";
-        } else if (str.equals("3")) {
-            return "全部";
-        } else {
-            return "#";
-        }
-    }
+//    // 获得汉语拼音首字母
+//    public String getAlpha(String str) {
+//        if (str == null) {
+//            return "#";
+//        }
+//        if (str.trim().length() == 0) {
+//            return "#";
+//        }
+//        char c = str.trim().substring(0, 1).charAt(0);
+//        // 正则表达式，判断首字母是否是英文字母
+//        Pattern pattern = Pattern.compile("^[A-Za-z]+$");
+//        if (pattern.matcher(c + "").matches()) {
+//            return (c + "").toUpperCase();
+//        } else if (str.equals("0")) {
+//            return "定位";
+//        } else if (str.equals("1")) {
+//            return "最近";
+//        } else if (str.equals("2")) {
+//            return "热门";
+//        } else if (str.equals("3")) {
+//            return "全部";
+//        } else {
+//            return "#";
+//        }
+//    }
 
+    // 实现OnScrollListener监听的回调的2个方法
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (scrollState == SCROLL_STATE_TOUCH_SCROLL
@@ -838,7 +716,6 @@ public class SelectCityActivity extends Activity implements AbsListView.OnScroll
         if (!isScroll) {
             return;
         }
-
         if (mReady) {
             String text;
             String name = allCity_Bean_lists.get(firstVisibleItem).getName();
