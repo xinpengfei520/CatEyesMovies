@@ -7,6 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.domain.CinemaContainer;
 
 import java.util.List;
 
@@ -22,13 +23,12 @@ import butterknife.ButterKnife;
 public class MovieTheatreDataAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<String> str;
+    private List<CinemaContainer.Databean.Chaoyangbean> str;
 
-    public MovieTheatreDataAdapter(Context mContext, List<String> str) {
+    public MovieTheatreDataAdapter(Context mContext, List<CinemaContainer.Databean.Chaoyangbean> str) {
         this.mContext = mContext;
         this.str = str;
     }
-
 
     @Override
     public int getCount() {
@@ -58,6 +58,10 @@ public class MovieTheatreDataAdapter extends BaseAdapter {
         }
 
         // 获取数据
+        CinemaContainer.Databean.Chaoyangbean chaoyangbean = str.get(position);
+        holder.tvTheatreName.setText(chaoyangbean.getNm());
+        holder.tvMoney.setText(chaoyangbean.getSellPrice() + "");
+        holder.tvAddress.setText(chaoyangbean.getAddr());
 
         return convertView;
     }

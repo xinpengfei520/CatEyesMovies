@@ -8,13 +8,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.flyco.tablayout.SegmentTabLayout;
+import com.google.gson.Gson;
 import com.xpf.cateyesmovies.R;
 import com.xpf.cateyesmovies.activity.SearchActivity;
 import com.xpf.cateyesmovies.activity.SelectCityActivity;
+import com.xpf.cateyesmovies.adapter.MovieTheatreDataAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
+import com.xpf.cateyesmovies.domain.CinemaContainer;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +33,6 @@ import okhttp3.Call;
  */
 
 public class MovieTheatreFragment extends BaseFragment {
-
     @BindView(R.id.tv_select_city)
     TextView tvSelectCity;
     @BindView(R.id.tv_title)
@@ -41,13 +45,14 @@ public class MovieTheatreFragment extends BaseFragment {
 //    FilterView filterView;
     @BindView(R.id.smoothListView)
     ListView smoothListView;
+    private MovieTheatreDataAdapter adapter;
+    private List<CinemaContainer.Databean.Chaoyangbean> chaoyang;
 
     @Override
     protected View initView() {
         Log.e("TAG", "影院页面的布局初始化了");
         View view = View.inflate(mContext, R.layout.fragment_theatre, null);
         ButterKnife.bind(this, view);
-
         return view;
     }
 
@@ -55,11 +60,9 @@ public class MovieTheatreFragment extends BaseFragment {
     public void initData() {
         super.initData();
         Log.e("TAG", "影院页面的数据初始化了");
-
         segTabLayout.setVisibility(View.GONE);
         tvTitle.setText("影院");
         ivSearch.setVisibility(View.VISIBLE);
-
         getTheatreDataFromNet();
     }
 
@@ -89,8 +92,13 @@ public class MovieTheatreFragment extends BaseFragment {
 
     private void processData(String json) {
         // 解析数据
-
-        // 设置适配器
+        CinemaContainer cinemaContainer = new Gson().fromJson(json, CinemaContainer.class);
+        chaoyang = cinemaContainer.getData().getChaoyang();
+        if (chaoyang != null && chaoyang.size() > 0) {
+            // 设置适配器
+            adapter = new MovieTheatreDataAdapter(mContext, chaoyang);
+            smoothListView.setAdapter(adapter);
+        }
     }
 
     @OnClick({R.id.tv_select_city, R.id.iv_search})
