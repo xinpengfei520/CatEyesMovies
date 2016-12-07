@@ -37,7 +37,7 @@ import okhttp3.Call;
 
 public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int PICTURE = -1; // 顶部图片类型
+    private static final int PICTURE = -1; // 顶部4个图片类型
     private static final int TYPETWO = 2;  // feedType = 2的类型
     private static final int TYPESEVEN = 7;// feedType = 7的类型
     private static final int TYPEEIGHT = 8;// feedType = 8的类型

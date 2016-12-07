@@ -43,6 +43,7 @@ public class MovieFragment extends BaseFragment {
     ImageView ivSearch;
     private String[] tlTitles = {"热映", "待映", "找片"};
     private List<BaseFragment> fragments;
+    private HotMovieFragment hotMovieFragment;
 
     @Override
     protected View initView() {
@@ -63,12 +64,21 @@ public class MovieFragment extends BaseFragment {
 
     private void initFragment() {
         fragments = new ArrayList<>();
-        fragments.add(new HotMovieFragment());
+        hotMovieFragment = new HotMovieFragment();
+        fragments.add(hotMovieFragment);
         fragments.add(new DelayMovieFragment());
         fragments.add(new FindMovieFragment());
     }
 
     private void initListener() {
+
+        // 设置hotMovieFragment里面ListView滑动状态改变的监听
+        hotMovieFragment.setOnStateChangeListener(new HotMovieFragment.OnStateChangeListener() {
+            @Override
+            public void onChange(boolean isChange) {
+                ivSearch.setVisibility(isChange ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
 
         // 设置ViewPager的适配器
         viewPager.setAdapter(new MyViewPagerAdapter(getFragmentManager()));
@@ -113,6 +123,11 @@ public class MovieFragment extends BaseFragment {
         viewPager.setCurrentItem(0); // 默认在第一页
     }
 
+    // 设置ViewPager的滑动事件
+    public void setViewPagerState(boolean isScroll) {
+        viewPager.setNoScroll(isScroll);
+    }
+
     class MyViewPagerAdapter extends FragmentPagerAdapter {
 
         public MyViewPagerAdapter(FragmentManager fm) {
@@ -133,7 +148,6 @@ public class MovieFragment extends BaseFragment {
         public CharSequence getPageTitle(int position) {
             return tlTitles[position];
         }
-
     }
 
     @OnClick({R.id.tv_select_city, R.id.iv_search})
@@ -147,6 +161,5 @@ public class MovieFragment extends BaseFragment {
                 break;
         }
     }
-
 
 }

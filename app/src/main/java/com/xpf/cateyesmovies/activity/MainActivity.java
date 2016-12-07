@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -28,6 +29,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends FragmentActivity {
 
     private static final int MESSAGE_BACK = 1;
+    public static final String FRAGMENT_TAG = "moviefragment";
     @BindView(R.id.fl_container)
     FrameLayout flContainer;
     @BindView(R.id.rb_movie)
@@ -40,16 +42,6 @@ public class MainActivity extends FragmentActivity {
     RadioButton rbMy;
     @BindView(R.id.rg_main)
     RadioGroup rgMain;
-
-//    private boolean isFirstShow; // 记录ListView的第一条是否显示
-//
-//    public boolean isFirstShow() {
-//        return isFirstShow;
-//    }
-//
-//    public void setFirstShow(boolean firstShow) {
-//        isFirstShow = firstShow;
-//    }
 
     private List<BaseFragment> fragments;
     private int currentPosition = 0; // 默认为位置为0
@@ -74,7 +66,6 @@ public class MainActivity extends FragmentActivity {
 
         initFragment();
         initListener();
-
         rgMain.check(R.id.rb_movie); // 默认选中电影页面
     }
 
@@ -123,7 +114,11 @@ public class MainActivity extends FragmentActivity {
                     if (fromFragment != null) {
                         transaction.hide(fromFragment); // 隐藏当前的
                     }
-                    transaction.add(R.id.fl_container, toFragment).commit();// 添加新的
+                    if (toFragment instanceof MovieFragment) { // 判断如果要添加的Fragment是MovieFragment就给它设置一个TAG
+                        transaction.add(R.id.fl_container, toFragment, FRAGMENT_TAG).commit();// 添加新的
+                    } else {
+                        transaction.add(R.id.fl_container, toFragment).commit(); // 添加新的
+                    }
                 } else {
                     if (fromFragment != null) {
                         transaction.hide(fromFragment);
@@ -158,5 +153,33 @@ public class MainActivity extends FragmentActivity {
         super.onDestroy();
         // 保证在activity退出前,移除所有未被执行的消息和回调方法,避免出现内存泄漏!
         handler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * ///////////////以下的几个方法用来，让fragment能够监听touch事件////////////////////////
+     */
+    private ArrayList<MyOnTouchListener> onTouchListeners = new ArrayList<MyOnTouchListener>(10);
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        for (MyOnTouchListener listener : onTouchListeners) {
+            listener.onTouch(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    // 注册触摸事件的监听
+    public void registerMyOnTouchListener(MyOnTouchListener myOnTouchListener) {
+        onTouchListeners.add(myOnTouchListener);
+    }
+
+    // 解注册触摸事件的监听
+    public void unregisterMyOnTouchListener(MyOnTouchListener myOnTouchListener) {
+        onTouchListeners.remove(myOnTouchListener);
+    }
+
+    // 触摸事件的监听器
+    public interface MyOnTouchListener {
+        boolean onTouch(MotionEvent ev);
     }
 }

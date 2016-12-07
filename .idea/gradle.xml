@@ -8,7 +8,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/CatEyesRefresh_lib" />
             <option value="$PROJECT_DIR$/FlycoTabLayout_Lib" />
             <option value="$PROJECT_DIR$/HorizontalListView_lib" />
             <option value="$PROJECT_DIR$/MaterialRefreshLayout_library" />

@@ -2,12 +2,15 @@ package com.xpf.cateyesmovies.fragment;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.meetme.android.horizontallistview.HorizontalListView;
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.activity.MainActivity;
 import com.xpf.cateyesmovies.adapter.BestWishMoiveAdapter;
 import com.xpf.cateyesmovies.adapter.DelayMoviesListAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
@@ -24,6 +27,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
+
+import static com.xpf.cateyesmovies.activity.MainActivity.FRAGMENT_TAG;
 
 /**
  * Created by xpf on 2016/11/30 :)
@@ -43,13 +48,18 @@ public class DelayMovieFragment extends BaseFragment {
     private BestWishMoiveAdapter bestWishMoiveAdapter;
     private List<DelayMovieListBean.DataBean.ComingBean> comingMovieBean;
     private List<DelayBestWishMovieBean.DataBean.MoviesBean> bestWishmovies;
+    MovieFragment fragment;
+
+    private GestureDetector mGestureDetector; // 手势监听
+    MainActivity.MyOnTouchListener myOnTouchListener; // 触摸监听
+    private boolean isRight = false; // 是否为向右滑动
+    private boolean isLeft = false;  // 是否为向左滑动
 
     @Override
     protected View initView() {
         Log.e("TAG", "待映页面的布局初始化了");
         View view = View.inflate(mContext, R.layout.fragment_delaymovie, null);
         ButterKnife.bind(this, view);
-
         return view;
     }
 
@@ -58,7 +68,8 @@ public class DelayMovieFragment extends BaseFragment {
         super.initData();
         Log.e("TAG", "待映页面的数据初始化了");
 
-
+        // 通过Tag获取MovieFragment的对象,也可通过mainActivity获取,获取此fragment应放在这里(onActivityCreated),避免Tag未被设置而空指针异常
+        fragment = (MovieFragment) getFragmentManager().findFragmentByTag(FRAGMENT_TAG);
         // 给ListView添加推荐头布局(暂无数据)
 //        View RecommendView = View.inflate(mContext, R.layout.delayrecommend_head, null);
 //        lv_recommend = (ListView) RecommendView.findViewById(R.id.lv_recommend);
@@ -77,6 +88,92 @@ public class DelayMovieFragment extends BaseFragment {
     }
 
     private void initListener() {
+
+        // 手势监听
+        mGestureDetector = new GestureDetector(mContext, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                return false;
+            }
+        });
+
+        // 设置自定义触摸事件的监听器
+        myOnTouchListener = new MainActivity.MyOnTouchListener() {
+            float startX;
+
+            @Override
+            public boolean onTouch(MotionEvent ev) {
+                switch (ev.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = ev.getRawX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float endX = ev.getRawX();
+                        if (endX - startX < -10) {
+                            isLeft = true;
+                            Log.e("TAG", "onTouch() endX - startX ===" + (endX - startX));
+                        } else {
+                            isLeft = false;
+                        }
+                        if (endX - startX > 10) {
+                            isRight = true;
+                            Log.e("TAG", "onTouch() endX - startX ===" + (endX - startX));
+                        } else {
+                            isRight = false;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+
+                        break;
+                }
+                return mGestureDetector.onTouchEvent(ev);
+//                return true;
+            }
+        };
+        ((MainActivity) getActivity()).registerMyOnTouchListener(myOnTouchListener);
+
+        lv_bestWish.setOnScrollStateChangedListener(new HorizontalListView.OnScrollStateChangedListener() {
+            @Override
+            public void onScrollStateChanged(ScrollState scrollState) {
+                int firstVisiblePosition = lv_bestWish.getFirstVisiblePosition();
+                int lastVisiblePosition = lv_bestWish.getLastVisiblePosition();
+                Log.e("TAG", "firstVisiblePosition===" + firstVisiblePosition + ",lastVisiblePosition===" + lastVisiblePosition);
+
+//                if (lastVisiblePosition == bestWishmovies.size() - 1 || firstVisiblePosition == 0) {
+                if (((lastVisiblePosition == bestWishmovies.size() - 1) && isLeft)
+                        || ((firstVisiblePosition == 0) && isRight)) {
+                    fragment.setViewPagerState(false);
+                } else {
+                    fragment.setViewPagerState(true);
+                }
+            }
+        });
+
         CustomProgressDrawable mprogressview = new CustomProgressDrawable(mContext, refresh);
         mprogressview.setProgressResource(mContext, R.drawable.a_a);
 

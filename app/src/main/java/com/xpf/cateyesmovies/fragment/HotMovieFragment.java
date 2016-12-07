@@ -125,6 +125,10 @@ public class HotMovieFragment extends BaseFragment {
                         Log.e("TAG", "onScroll()===" + firstVisibleItem);
                         onStateChangeListener.onChange(true);
                     }
+                } else {
+                    if (onStateChangeListener != null) {
+                        onStateChangeListener.onChange(false);
+                    }
                 }
             }
         });
