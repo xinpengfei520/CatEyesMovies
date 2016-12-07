@@ -6,12 +6,13 @@
 
     <include layout="@layout/titlebar" />
 
-    <!--<com.xpf.cateyesmovies.ui.view.FilterView-->
-    <!--android:id="@+id/filterView"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content" />-->
+    <com.xpf.cateyesmovies.ui.view.FilterView
+        android:id="@+id/filterView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
-    <ListView
+    <com.xpf.cateyesmovies.ui.view.SmoothListView
         android:id="@+id/smoothListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
