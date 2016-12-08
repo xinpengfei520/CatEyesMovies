@@ -18,13 +18,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="10dp">
 
         <ImageView
             android:id="@+id/iv_figure"
-            android:layout_width="80dp"
-            android:layout_height="100dp"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
             android:src="@drawable/default_pic" />
 
         <LinearLayout

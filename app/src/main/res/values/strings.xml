@@ -12,4 +12,9 @@
     <string name="loading">松手加载数据</string>
     <string name="loaded">完成加载数据</string>
 
+    <!--footer-->
+    <string name="list_footer_loading">正在加载中…</string>
+    <string name="list_footer_network_error">点击重新加载</string>
+    <string name="list_footer_end">已经到底了</string>
+
 </resources>

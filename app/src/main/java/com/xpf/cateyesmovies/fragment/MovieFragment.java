@@ -67,7 +67,8 @@ public class MovieFragment extends BaseFragment {
         hotMovieFragment = new HotMovieFragment();
         fragments.add(hotMovieFragment);
         fragments.add(new DelayMovieFragment());
-        fragments.add(new FindMovieFragment());
+//        fragments.add(new FindMovieFragment());
+        fragments.add(new FindingFragment());
     }
 
     private void initListener() {

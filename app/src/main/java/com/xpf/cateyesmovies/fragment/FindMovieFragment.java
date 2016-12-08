@@ -1,7 +1,6 @@
 package com.xpf.cateyesmovies.fragment;
 
 import android.content.Intent;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -15,8 +14,6 @@ import com.xpf.cateyesmovies.adapter.AwardsMoviesAdapter;
 import com.xpf.cateyesmovies.adapter.TagTextAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.FindAwardsMovieBean;
-import com.xpf.cateyesmovies.ui.update.CustomProgressDrawable;
-import com.xpf.cateyesmovies.ui.update.CustomSwipeRefreshLayout;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -60,8 +57,6 @@ public class FindMovieFragment extends BaseFragment {
     LinearLayout llFour;
     @BindView(R.id.tv_allAwards)
     TextView tvAllAwards;
-    @BindView(R.id.refresh)
-    CustomSwipeRefreshLayout refresh;
     private TagTextAdapter tagTextAdapter;
     private List<FindAwardsMovieBean.DataBean> awardsDataBean;
     private AwardsMoviesAdapter awardsMoviesAdapter;
@@ -71,7 +66,6 @@ public class FindMovieFragment extends BaseFragment {
         Log.e("TAG", "找片页面的布局初始化了");
         View view = View.inflate(mContext, R.layout.fragment_findmovie, null);
         ButterKnife.bind(this, view);
-
         return view;
     }
 
@@ -84,28 +78,10 @@ public class FindMovieFragment extends BaseFragment {
         inittypeString();
         initdestrictString();
         inittimeString();
-
         setData();
     }
 
     private void initListener() {
-        CustomProgressDrawable mprogressview = new CustomProgressDrawable(mContext, refresh);
-        mprogressview.setProgressResource(mContext, R.drawable.a_a);
-
-        refresh.setProgressView(mprogressview, R.drawable.progress_bg);
-        refresh.setOnRefreshListener(new CustomSwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refresh.isRefreshing()) {
-                            refresh.setRefreshing(false);
-                        }
-                    }
-                }, 3000);
-            }
-        });
     }
 
     private void inittypeString() {
@@ -195,7 +171,6 @@ public class FindMovieFragment extends BaseFragment {
             tagTextAdapter = new TagTextAdapter(mContext, timeString);
             hzListView3.setAdapter(tagTextAdapter);
         }
-
         getDataFromNet();
     }
 

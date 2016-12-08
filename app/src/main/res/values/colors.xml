@@ -15,6 +15,7 @@
     <color name="ButtonTextColorNormal">#6A6767</color>
     <color name="radioGroupBg">#F6F6F6</color>
     <color name="goldenNumber">#FFD974</color>
+    <color name="color_00">#8A000000</color>
 
     <!-- common -->
     <color name="black">#000000</color>

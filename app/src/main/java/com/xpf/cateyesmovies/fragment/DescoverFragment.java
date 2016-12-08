@@ -28,7 +28,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
 
-
 /**
  * Created by xpf on 2016/11/30 :)
  * Wechat:18091383534
@@ -90,7 +89,7 @@ public class DescoverFragment extends BaseFragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                Log.e("TAG", "onScrolled():dx===" + dx + ",dy===" + dy);
+//                Log.e("TAG", "onScrolled():dx===" + dx + ",dy===" + dy);
             }
         });
     }
@@ -112,12 +111,12 @@ public class DescoverFragment extends BaseFragment {
 
         @Override
         public void onError(Call call, Exception e, int id) {
-            Log.e("TAG", "联网请求DescoverListData失败===" + e.toString());
+//            Log.e("TAG", "联网请求DescoverListData失败===" + e.toString());
         }
 
         @Override
         public void onResponse(String response, int id) {
-            Log.e("TAG", "联网请求DescoverListData成功===" + response);
+//            Log.e("TAG", "联网请求DescoverListData成功===" + response);
             processData(response);
         }
     }
@@ -126,21 +125,24 @@ public class DescoverFragment extends BaseFragment {
         DescoverListBean descoverListBean = JSONObject.parseObject(json, DescoverListBean.class);
         feedsBeanList = descoverListBean.getData().getFeeds();
         if (feedsBeanList != null && feedsBeanList.size() > 0) {
-            // 设置适配器
+
             descoverListDataAdapter = new DescoverListDataAdapter(mContext, feedsBeanList);
+            // 设置适配器
             recyclerView.setAdapter(descoverListDataAdapter);
             // 设置布局管理器
             GridLayoutManager manager = new GridLayoutManager(mContext, 4);
             // 设置跨度大小监听
-            manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    if (position <= 3) { // 前四个跨列为1
-                        return 1;
+            manager.setSpanSizeLookup(
+                    new GridLayoutManager.SpanSizeLookup() {
+                        @Override
+                        public int getSpanSize(int position) {
+                            if (position <= 3) { // 前四个跨列为1
+                                return 1;
+                            }
+                            return 4; // 其他跨列为4
+                        }
                     }
-                    return 4; // 其他跨列为4
-                }
-            });
+            );
             recyclerView.setLayoutManager(manager);
             recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL_LIST));
         }

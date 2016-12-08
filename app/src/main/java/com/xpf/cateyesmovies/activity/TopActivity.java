@@ -6,11 +6,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 
+import com.cundong.recyclerview.HeaderAndFooterRecyclerViewAdapter;
+import com.cundong.recyclerview.RecyclerViewUtils;
 import com.google.gson.Gson;
 import com.xpf.cateyesmovies.R;
 import com.xpf.cateyesmovies.adapter.TopMovieAdapter;
 import com.xpf.cateyesmovies.domain.TopDataBean;
 import com.xpf.cateyesmovies.ui.DividerItemDecoration;
+import com.xpf.cateyesmovies.ui.SampleFooter;
+import com.xpf.cateyesmovies.ui.SampleHeader;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -31,6 +35,7 @@ public class TopActivity extends Activity {
     RecyclerView recyclerView;
     private List<TopDataBean.DataBean.MoviesBean> movies;
     private TopMovieAdapter adapter;
+    private HeaderAndFooterRecyclerViewAdapter mHeaderAndFooterRecyclerViewAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +73,18 @@ public class TopActivity extends Activity {
         if (movies != null && movies.size() > 0) {
             adapter = new TopMovieAdapter(this, movies);
             // 设置适配器
-            recyclerView.setAdapter(adapter);
+//            recyclerView.setAdapter(adapter);
+            mHeaderAndFooterRecyclerViewAdapter = new HeaderAndFooterRecyclerViewAdapter(adapter);
+            recyclerView.setAdapter(mHeaderAndFooterRecyclerViewAdapter);
 
             // 设置布局管理器
             LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(manager);
+
+            // add a HeaderView
+            RecyclerViewUtils.setHeaderView(recyclerView, new SampleHeader(this));
+            // add a FooterView
+            RecyclerViewUtils.setFooterView(recyclerView, new SampleFooter(this));
 
             // 设置RecyclerView的Item之间的分割线
             recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));

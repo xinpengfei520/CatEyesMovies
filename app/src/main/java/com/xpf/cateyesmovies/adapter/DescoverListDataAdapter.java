@@ -43,10 +43,12 @@ import okhttp3.Call;
 public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int PICTURE = -1; // 顶部4个图片类型
+    private static final int TYPEONE = 1;  // feedType = 1的类型
     private static final int TYPETWO = 2;  // feedType = 2的类型
     private static final int TYPEFOUR = 4; // feedType = 4的类型
     private static final int TYPESEVEN = 7;// feedType = 7的类型
     private static final int TYPEEIGHT = 8;// feedType = 8的类型
+    private static final int HEADERTYPE = 0;// headertype加载更多类型
 
     private Context mContext;
     private List<DescoverListBean.DataBean.FeedsBean> feedsBeanList;
@@ -73,6 +75,8 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
             return new FindFourViewHolder(mContext, mLayoutInflater.inflate(R.layout.item_fourpicture, null));
         } else if (viewType == TYPEFOUR) {
             return new TypeFourViewHolder(mContext, mLayoutInflater.inflate(R.layout.item_typefour, null));
+        } else if (viewType == TYPEONE) {
+            return new TypeOneViewHolder(mContext, mLayoutInflater.inflate(R.layout.item_typeone, null));
         }
         return null;
     }
@@ -91,6 +95,9 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
         } else if (getItemViewType(position) == TYPEFOUR) {
             TypeFourViewHolder typeFourViewHolder = (TypeFourViewHolder) holder;
             typeFourViewHolder.setData(feedsBeanList.get(position - 4), position);
+        } else if (getItemViewType(position) == TYPEONE) {
+            TypeOneViewHolder typeOneViewHolder = (TypeOneViewHolder) holder;
+            typeOneViewHolder.setData(feedsBeanList.get(position - 4), position);
         } else if (getItemViewType(position) == PICTURE) {
             FindFourViewHolder findFourViewHolder = (FindFourViewHolder) holder;
             findFourViewHolder.setData(position);
@@ -99,7 +106,7 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return feedsBeanList.size() + 4; // + 4 ? Why OutOfIndex ?
+        return feedsBeanList.size() + 4;
     }
 
     // 根据位置获取当前Item的类型
@@ -116,6 +123,45 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
 //            Log.e("TAG", "position===" + position + ",feedsBeanList size===" + feedsBeanList.size() + ",FeedType===" + feedsBeanList.get(position).getFeedType());
         }
         return currentType;
+    }
+
+    // feedType = 1 的类型
+    static class TypeOneViewHolder extends RecyclerView.ViewHolder {
+        private Context mContext;
+        @BindView(R.id.tv_today)
+        TextView tvToday;
+        @BindView(R.id.iv_figure)
+        ImageView ivFigure;
+        @BindView(R.id.tv_title)
+        TextView tvTitle;
+        @BindView(R.id.tv_category)
+        TextView tvCategory;
+        @BindView(R.id.ll_one)
+        LinearLayout llOne;
+
+        public TypeOneViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            this.mContext = mContext;
+        }
+
+        public void setData(DescoverListBean.DataBean.FeedsBean feedsBean, final int position) {
+            Glide.with(mContext).load(feedsBean.getImages().get(0).getUrl()).into(ivFigure);
+            tvTitle.setText(feedsBean.getTitle());
+            tvCategory.setText(feedsBean.getUser().getNickName());
+            if (position == 4) {
+                tvToday.setVisibility(View.VISIBLE);
+            } else {
+                tvToday.setVisibility(View.GONE);
+            }
+            // 给Item设置点击事件
+            llOne.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext, "position===" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     // feedType = 4 的类型
@@ -301,7 +347,10 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
         public void setData(final DescoverListBean.DataBean.FeedsBean feedsBean, final int position) {
             Glide.with(mContext).load(feedsBean.getImages().get(0).getUrl()).into(ivFigure);
             tvTitle.setText(feedsBean.getTitle());
-            tvCategory.setText(feedsBean.getUser().getNickName());
+            // 此处feedType = 7中又有两种情况,一种没有NickName字段,先判断防止报空
+            if (feedsBean.getUser() != null) {
+                tvCategory.setText(feedsBean.getUser().getNickName());
+            }
             tvComment.setText(feedsBean.getCommentCount() + "");
             tvLooked.setText(feedsBean.getViewCount() + "");
             if (position == 4) {
@@ -365,7 +414,6 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
             llTwo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     // 考虑将整个bean对象传递过去,通过获取其feedType来加载对应的url(类型不同url不同)
                     Intent intent = new Intent(mContext, TwoTypeDetailsActivity.class);
                     intent.putExtra("url", feedsBean.getUrl());
