@@ -14,6 +14,7 @@ import com.xpf.cateyesmovies.activity.SearchActivity;
 import com.xpf.cateyesmovies.adapter.DescoverListDataAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.DescoverListBean;
+import com.xpf.cateyesmovies.ui.DividerItemDecoration;
 import com.xpf.cateyesmovies.ui.update.CustomProgressDrawable;
 import com.xpf.cateyesmovies.ui.update.CustomSwipeRefreshLayout;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
@@ -141,6 +142,7 @@ public class DescoverFragment extends BaseFragment {
                 }
             });
             recyclerView.setLayoutManager(manager);
+            recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL_LIST));
         }
     }
 

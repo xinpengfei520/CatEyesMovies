@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
@@ -43,6 +44,7 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private static final int PICTURE = -1; // 顶部4个图片类型
     private static final int TYPETWO = 2;  // feedType = 2的类型
+    private static final int TYPEFOUR = 4; // feedType = 4的类型
     private static final int TYPESEVEN = 7;// feedType = 7的类型
     private static final int TYPEEIGHT = 8;// feedType = 8的类型
 
@@ -69,6 +71,8 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
             return new TypeEightViewHolder(mContext, mLayoutInflater.inflate(R.layout.item_typeeight, null));
         } else if (viewType == PICTURE) {
             return new FindFourViewHolder(mContext, mLayoutInflater.inflate(R.layout.item_fourpicture, null));
+        } else if (viewType == TYPEFOUR) {
+            return new TypeFourViewHolder(mContext, mLayoutInflater.inflate(R.layout.item_typefour, null));
         }
         return null;
     }
@@ -77,13 +81,16 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPETWO) {
             TypeTwoViewHolder typeTwoViewHolder = (TypeTwoViewHolder) holder;
-            typeTwoViewHolder.setData(feedsBeanList.get(position), position);
+            typeTwoViewHolder.setData(feedsBeanList.get(position - 4), position);
         } else if (getItemViewType(position) == TYPESEVEN) {
             TypeSevenViewHolder typeSevenViewHolder = (TypeSevenViewHolder) holder;
-            typeSevenViewHolder.setData(feedsBeanList.get(position), position);
+            typeSevenViewHolder.setData(feedsBeanList.get(position - 4), position);
         } else if (getItemViewType(position) == TYPEEIGHT) {
             TypeEightViewHolder typeEightViewHolder = (TypeEightViewHolder) holder;
-            typeEightViewHolder.setData(feedsBeanList.get(position), position);
+            typeEightViewHolder.setData(feedsBeanList.get(position - 4), position);
+        } else if (getItemViewType(position) == TYPEFOUR) {
+            TypeFourViewHolder typeFourViewHolder = (TypeFourViewHolder) holder;
+            typeFourViewHolder.setData(feedsBeanList.get(position - 4), position);
         } else if (getItemViewType(position) == PICTURE) {
             FindFourViewHolder findFourViewHolder = (FindFourViewHolder) holder;
             findFourViewHolder.setData(position);
@@ -92,7 +99,7 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return feedsBeanList.size(); // + 4 ? Why OutOfIndex ?
+        return feedsBeanList.size() + 4; // + 4 ? Why OutOfIndex ?
     }
 
     // 根据位置获取当前Item的类型
@@ -105,10 +112,55 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         if (feedsBeanList != null && feedsBeanList.size() > 0) {
-            currentType = feedsBeanList.get(position).getFeedType();
-            Log.e("TAG", "position===" + position + ",feedsBeanList size===" + feedsBeanList.size() + ",FeedType===" + feedsBeanList.get(position).getFeedType());
+            currentType = feedsBeanList.get(position - 4).getFeedType();
+//            Log.e("TAG", "position===" + position + ",feedsBeanList size===" + feedsBeanList.size() + ",FeedType===" + feedsBeanList.get(position).getFeedType());
         }
         return currentType;
+    }
+
+    // feedType = 4 的类型
+    static class TypeFourViewHolder extends RecyclerView.ViewHolder {
+        private Context mContext;
+        @BindView(R.id.tv_today)
+        TextView tvToday;
+        @BindView(R.id.iv_figure)
+        ImageView ivFigure;
+        @BindView(R.id.tv_title)
+        TextView tvTitle;
+        @BindView(R.id.tv_category)
+        TextView tvCategory;
+        @BindView(R.id.tv_comment)
+        TextView tvComment;
+        @BindView(R.id.tv_looked)
+        TextView tvLooked;
+        @BindView(R.id.ll_four)
+        LinearLayout llFour;
+
+        public TypeFourViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            this.mContext = mContext;
+        }
+
+        public void setData(final DescoverListBean.DataBean.FeedsBean feedsBean, final int position) {
+            Glide.with(mContext).load(feedsBean.getImages().get(0).getUrl()).into(ivFigure);
+            tvTitle.setText(feedsBean.getTitle());
+            tvCategory.setText(feedsBean.getUser().getNickName());
+            tvLooked.setText(feedsBean.getViewCount() + "");
+            tvComment.setText(feedsBean.getCommentCount() + "");
+            if (position == 4) {
+                tvToday.setVisibility(View.VISIBLE);
+            } else {
+                tvToday.setVisibility(View.GONE);
+            }
+            // 给Item设置点击事件
+            llFour.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext, "position===" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     // 发现页面顶部4个图片的ViewHolder

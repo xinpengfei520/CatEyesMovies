@@ -1,2 +1,2 @@
-include ':app', ':FlycoTabLayout_Lib', ':banner'
+include ':app', ':FlycoTabLayout_Lib', ':banner', ':HeaderAndFooterRecyclerView', ':library'
 include ':HorizontalListView_lib'

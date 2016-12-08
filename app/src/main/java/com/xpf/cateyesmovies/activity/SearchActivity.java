@@ -15,7 +15,6 @@ import butterknife.OnClick;
 
 // 搜索页面
 public class SearchActivity extends Activity {
-
     @BindView(R.id.et_input)
     EditText etInput;
     @BindView(R.id.ll_search)
