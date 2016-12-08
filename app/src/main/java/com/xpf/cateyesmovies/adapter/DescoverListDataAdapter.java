@@ -14,7 +14,11 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.xpf.cateyesmovies.R;
+import com.xpf.cateyesmovies.activity.MallActivity;
+import com.xpf.cateyesmovies.activity.QuickActivity;
 import com.xpf.cateyesmovies.activity.SevenTypeDetailsActivity;
+import com.xpf.cateyesmovies.activity.TicketsActivity;
+import com.xpf.cateyesmovies.activity.TopActivity;
 import com.xpf.cateyesmovies.activity.TwoTypeDetailsActivity;
 import com.xpf.cateyesmovies.domain.DescoverListBean;
 import com.xpf.cateyesmovies.domain.FindFourPictureBean;
@@ -114,6 +118,8 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
         ImageView ivTop;
         @BindView(R.id.tv_top)
         TextView tvTop;
+        @BindView(R.id.ll_pic)
+        LinearLayout llPic;
 
         public FindFourViewHolder(Context mContext, View itemView) {
             super(itemView);
@@ -148,6 +154,29 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
                     tvTop.setText(pictureData.get(position).getTitle());
                 }
             }
+            llPic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (position) {
+                        case 0:
+                            Intent intent0 = new Intent(mContext, TopActivity.class);
+                            mContext.startActivity(intent0);
+                            break;
+                        case 1:
+                            Intent intent1 = new Intent(mContext, QuickActivity.class);
+                            mContext.startActivity(intent1);
+                            break;
+                        case 2:
+                            Intent intent2 = new Intent(mContext, MallActivity.class);
+                            mContext.startActivity(intent2);
+                            break;
+                        case 3:
+                            Intent intent3 = new Intent(mContext, TicketsActivity.class);
+                            mContext.startActivity(intent3);
+                            break;
+                    }
+                }
+            });
         }
     }
 

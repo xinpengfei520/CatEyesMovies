@@ -64,6 +64,10 @@
         <activity
             android:name=".activity.BannerDetailActivity"
             android:hardwareAccelerated="true" />
+        <activity android:name=".activity.TopActivity" />
+        <activity android:name=".activity.QuickActivity" />
+        <activity android:name=".activity.MallActivity" />
+        <activity android:name=".activity.TicketsActivity"></activity>
     </application>
 
 </manifest>

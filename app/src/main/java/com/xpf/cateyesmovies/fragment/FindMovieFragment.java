@@ -223,7 +223,6 @@ public class FindMovieFragment extends BaseFragment {
 
     // 解析获奖电影的数据
     private void processData(String json) {
-
         FindAwardsMovieBean findAwardsMovieBean = JSONObject.parseObject(json, FindAwardsMovieBean.class);
         awardsDataBean = findAwardsMovieBean.getData();
         if (awardsDataBean != null && awardsDataBean.size() > 0) {
