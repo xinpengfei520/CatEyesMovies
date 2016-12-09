@@ -35,7 +35,6 @@ import okhttp3.Call;
  */
 
 public class DescoverFragment extends BaseFragment {
-
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.ll_search)
@@ -44,6 +43,9 @@ public class DescoverFragment extends BaseFragment {
     CustomSwipeRefreshLayout refresh;
     private List<DescoverListBean.DataBean.FeedsBean> feedsBeanList;
     private DescoverListDataAdapter descoverListDataAdapter;
+    private GridLayoutManager gridLayoutManager;
+    private int offset = 10; // URL中的offset
+    private boolean isLoadMore = false; // 是否加载更多
 
     @Override
     protected View initView() {
@@ -64,7 +66,6 @@ public class DescoverFragment extends BaseFragment {
     private void initListener() {
         CustomProgressDrawable mprogressview = new CustomProgressDrawable(mContext, refresh);
         mprogressview.setProgressResource(mContext, R.drawable.a_a);
-
         refresh.setProgressView(mprogressview, R.drawable.progress_bg);
         refresh.setOnRefreshListener(new CustomSwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -80,18 +81,74 @@ public class DescoverFragment extends BaseFragment {
             }
         });
 
+        // 设置RecyclerView滑动时的监听
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            // 当滑动状态改变的时候回调
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
             }
 
+            // 当滑动的时候回调
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                Log.e("TAG", "onScrolled():dx===" + dx + ",dy===" + dy);
+                // 获取总的Item数
+                int totalItemCount = gridLayoutManager.getItemCount();
+                // 获取最后一个可见的Item的位置(从0开始)
+                int lastVisibleItem = gridLayoutManager.findLastVisibleItemPosition();
+                Log.e("TAG", "totalItemCount===" + totalItemCount + ",lastVisibleItem" + lastVisibleItem);
+
+                // 把当前最后一个可见的Item的位置传递过去
+                descoverListDataAdapter.setCurrentMaxPosition(lastVisibleItem);
+                isLoadMore = false;
+                // 判断最后一个可见Item的位置是最后一个Item
+                if (lastVisibleItem == totalItemCount - 1) {
+                    // 设置加载类型的状态-->显示加载视图
+                    descoverListDataAdapter.setCurrentState(101);
+                    // 需不要刷新适配器 ?
+                    if (!isLoadMore) {
+                        getLoadMoreDataFromNet(); // 联网请求数据
+                    }
+                }
             }
         });
+    }
+
+    // 请求加载更多的联网请求
+    private void getLoadMoreDataFromNet() {
+        OkHttpUtils
+                .get()
+                .url((AppNetConfig.DESCOVERLISTDATA).replace("offset=0", "offset=" + offset))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e("TAG", "联网请求更多数据失败===" + e.toString());
+                        descoverListDataAdapter.setCurrentState(102); // 当联网失败时,设置LoadMore类型的状态为error
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e("TAG", "联网请求MORE数据成功===" + response);
+                        DescoverListBean descoverListBean2 = JSONObject.parseObject(response, DescoverListBean.class);
+                        List<DescoverListBean.DataBean.FeedsBean> feedsBeen2 = descoverListBean2.getData().getFeeds();
+                        if (feedsBeen2 != null && feedsBeen2.size() > 0) {
+                            // 添加到之前的集合中去
+                            descoverListDataAdapter.addData(feedsBeen2);
+                            // 隐藏加载视图
+                            descoverListDataAdapter.setCurrentState(103);
+                            // 刷新适配器(也可以在适配器中刷新)
+//                            descoverListDataAdapter.notifyDataSetChanged();
+
+                        } else { //如果获取不到数据就设置LoadMore类型的状态为 no more data
+                            descoverListDataAdapter.setCurrentState(103);
+                        }
+                    }
+                });
+        Log.e("TAG", "LoadMore URL===" + (AppNetConfig.DESCOVERLISTDATA).replace("offset=0", "offset=" + offset));
+        offset += 10;      // 让url中的offset每次都加10
+        isLoadMore = true; // 记录当前已经加载更多
     }
 
     private void getDataFromNet() {
@@ -130,9 +187,9 @@ public class DescoverFragment extends BaseFragment {
             // 设置适配器
             recyclerView.setAdapter(descoverListDataAdapter);
             // 设置布局管理器
-            GridLayoutManager manager = new GridLayoutManager(mContext, 4);
+            gridLayoutManager = new GridLayoutManager(mContext, 4);
             // 设置跨度大小监听
-            manager.setSpanSizeLookup(
+            gridLayoutManager.setSpanSizeLookup(
                     new GridLayoutManager.SpanSizeLookup() {
                         @Override
                         public int getSpanSize(int position) {
@@ -143,7 +200,7 @@ public class DescoverFragment extends BaseFragment {
                         }
                     }
             );
-            recyclerView.setLayoutManager(manager);
+            recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL_LIST));
         }
     }

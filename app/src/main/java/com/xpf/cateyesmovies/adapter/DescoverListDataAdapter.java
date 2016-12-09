@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import com.xpf.cateyesmovies.utils.AppNetConfig;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -48,13 +50,39 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
     private static final int TYPEFOUR = 4; // feedType = 4的类型
     private static final int TYPESEVEN = 7;// feedType = 7的类型
     private static final int TYPEEIGHT = 8;// feedType = 8的类型
-    private static final int HEADERTYPE = 0;// headertype加载更多类型
+    private static final int LOADTYPE = 100;     // 加载更多类型
+    private static final int LOADING = 101;      // 正在加载更多
+    private static final int LOADERROR = 102;    // 加载更多失败
+    private static final int LOADCOMPLETE = 103; // 加载更多完成
+    private static final int LOADNODATA = 104;   // 没有更多数据了
 
     private Context mContext;
     private List<DescoverListBean.DataBean.FeedsBean> feedsBeanList;
     private LayoutInflater mLayoutInflater; // 初始化布局加载器
     private int currentType = -1; // 默认为-1(图片类型)
     private static List<FindFourPictureBean.DataBean> pictureData; // 图片数据集合
+
+    private int currentState = 101; // 当前的加载更多类型的状态(默认滑到底为加载)
+    private int currentMaxPosition;
+    private int loadViewPosition = 14;
+
+    // 设置当前的加载类型的状态
+    public void setCurrentState(int currentState) {
+        this.currentState = currentState;
+        notifyDataSetChanged(); // 刷新适配器
+    }
+
+    // 在原来集合的指定位置插入一组集合数据
+    public void addData(List<DescoverListBean.DataBean.FeedsBean> feeds) {
+        // 把新的集合数据添加到旧的集合的最后一个Item的位置(应该减去头部的4个位置)
+        feedsBeanList.addAll(currentMaxPosition - 4, feeds);
+        // 每次添加完数据后加载视图的位置 + 10
+        loadViewPosition += 10;
+    }
+
+    public void setCurrentMaxPosition(int position) {
+        currentMaxPosition = position;
+    }
 
     public DescoverListDataAdapter(Context mContext, List<DescoverListBean.DataBean.FeedsBean> feedsBeanList) {
         this.mContext = mContext;
@@ -77,6 +105,8 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
             return new TypeFourViewHolder(mContext, mLayoutInflater.inflate(R.layout.item_typefour, null));
         } else if (viewType == TYPEONE) {
             return new TypeOneViewHolder(mContext, mLayoutInflater.inflate(R.layout.item_typeone, null));
+        } else if (viewType == LOADTYPE) {
+            return new TypeLoadViewHolder(mContext, mLayoutInflater.inflate(R.layout.item_loadmore, null));
         }
         return null;
     }
@@ -101,12 +131,15 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
         } else if (getItemViewType(position) == PICTURE) {
             FindFourViewHolder findFourViewHolder = (FindFourViewHolder) holder;
             findFourViewHolder.setData(position);
+        } else if (getItemViewType(position) == LOADTYPE) {
+            TypeLoadViewHolder typeLoadViewHolder = (TypeLoadViewHolder) holder;
+            typeLoadViewHolder.setData(position);
         }
     }
 
     @Override
     public int getItemCount() {
-        return feedsBeanList.size() + 4;
+        return feedsBeanList.size() + 5; // 本身集合的数量 + 4个图片 + 1个刷新类型
     }
 
     // 根据位置获取当前Item的类型
@@ -118,11 +151,50 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
             return currentType;
         }
 
+        // 判断是否是加载视图的位置来返回加载类型
+        if (position == loadViewPosition) {
+            return currentType = LOADTYPE;
+        }
+
+        // 根据位置获取下面RecyclerView数据的类型(位置要4个Item图片的位置)
         if (feedsBeanList != null && feedsBeanList.size() > 0) {
             currentType = feedsBeanList.get(position - 4).getFeedType();
-//            Log.e("TAG", "position===" + position + ",feedsBeanList size===" + feedsBeanList.size() + ",FeedType===" + feedsBeanList.get(position).getFeedType());
         }
         return currentType;
+    }
+
+    // 加载更多类型的ViewHolder
+    class TypeLoadViewHolder extends RecyclerView.ViewHolder {
+        private Context mContext;
+        @BindView(R.id.progressBar)
+        ProgressBar progressBar;
+        @BindView(R.id.tv_state)
+        TextView tvState;
+        @BindView(R.id.ll_loadMore)
+        LinearLayout llLoadMore;
+
+        public TypeLoadViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            this.mContext = mContext;
+        }
+
+        // 根据不同的状态显示不同的视图
+        public void setData(int position) {
+            if (currentState == LOADING) {              // 加载中
+                llLoadMore.setVisibility(View.VISIBLE);
+                tvState.setText("努力加载中...");
+            } else if (currentState == LOADCOMPLETE) {  // 加载完成
+                llLoadMore.setVisibility(View.GONE);
+                Toast.makeText(mContext, "加载更多成功", Toast.LENGTH_SHORT).show();
+            } else if (currentState == LOADERROR) {     // 加载错误
+                progressBar.setVisibility(View.GONE);
+                tvState.setText("加载失败!");
+            } else if (currentState == LOADNODATA) {    // 没有更多数据了
+                progressBar.setVisibility(View.GONE);
+                tvState.setText("没有更多数据了!");
+            }
+        }
     }
 
     // feedType = 1 的类型
@@ -242,7 +314,7 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
 
                             @Override
                             public void onResponse(String response, int id) {
-                                Log.e("TAG", "FindFourViewHolder联网请求成功" + response);
+//                                Log.e("TAG", "FindFourViewHolder联网请求成功" + response);
                                 FindFourPictureBean findFourPictureBean = JSONObject.parseObject(response, FindFourPictureBean.class);
                                 pictureData = findFourPictureBean.getData();
                             }
@@ -390,19 +462,30 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
         TextView tvToday;
         @BindView(R.id.ll_two)
         LinearLayout llTwo;
+        List<ImageView> imgs;
 
         public TypeTwoViewHolder(Context mContext, View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.mContext = mContext;
+            initImgs();
+        }
+
+        // 初始化ImageView的集合
+        private void initImgs() {
+            imgs = new ArrayList<>();
+            imgs.add(ivImg1);
+            imgs.add(ivImg2);
+            imgs.add(ivImg3);
         }
 
         public void setData(final DescoverListBean.DataBean.FeedsBean feedsBean, int position) {
             tvTitle.setText(feedsBean.getTitle());
-            Glide.with(mContext).load(feedsBean.getImages().get(0).getUrl()).into(ivImg1);
-            Glide.with(mContext).load(feedsBean.getImages().get(1).getUrl()).into(ivImg2);
-            Glide.with(mContext).load(feedsBean.getImages().get(2).getUrl()).into(ivImg3);
-            tvLooked.setText(feedsBean.getViewCount() + "");
+            // 此处当feedType = 2时,img会有一个图片的情形和大于3个图片的情形,而布局文件最多只有3张图片,因此做如下处理
+            for (int i = 0; i < (feedsBean.getImages().size() >= 3 ? 3 : feedsBean.getImages().size()); i++) {
+                Glide.with(mContext).load(feedsBean.getImages().get(i).getUrl()).into(imgs.get(i));
+            }
+            tvLooked.setText(feedsBean.getViewCount() + ""); // 此处注意获取的类型,设置TextView应为String
             tvComment.setText(feedsBean.getCommentCount() + "");
             if (position == 4) {
                 tvToday.setVisibility(View.VISIBLE);
@@ -422,5 +505,17 @@ public class DescoverListDataAdapter extends RecyclerView.Adapter<RecyclerView.V
             });
         }
     }
+
+//    思考:能否用接口回调实现加载更多呢 ? :)
+//    private OnLoadingMoreListener onLoadingMoreListener;
+//
+//    public void setOnLoadingMoreListener(OnLoadingMoreListener onLoadingMoreListener) {
+//        this.onLoadingMoreListener = onLoadingMoreListener;
+//    }
+//
+//    // 加载更多的监听器
+//    public interface OnLoadingMoreListener {
+//        void loadMore(); // 加载更多
+//    }
 
 }

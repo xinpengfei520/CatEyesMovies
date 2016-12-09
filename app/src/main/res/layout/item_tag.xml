@@ -18,4 +18,11 @@
 
     </HorizontalScrollView>
 
+    <View
+        android:id="@+id/gray_view"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#22000000"
+        android:visibility="gone" />
+
 </LinearLayout>

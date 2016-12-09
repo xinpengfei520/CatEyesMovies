@@ -70,7 +70,7 @@ public class FindingPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == TAG) {
             TagViewHolder tagViewHolder = (TagViewHolder) holder;
-            tagViewHolder.setData(tagData.get(position));
+            tagViewHolder.setData(tagData.get(position), position);
         } else if (getItemViewType(position) == PIC) {
             PicViewHolder picViewHolder = (PicViewHolder) holder;
             picViewHolder.setData(position - 3);
@@ -97,7 +97,8 @@ public class FindingPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return currentType = AWARD;
     }
 
-    static class AwardViewHolder extends RecyclerView.ViewHolder {
+    // 获奖类型的ViewHolder
+    class AwardViewHolder extends RecyclerView.ViewHolder {
         private Context mContext;
         @BindView(R.id.linearLayout)
         LinearLayout linearLayout;
@@ -114,7 +115,7 @@ public class FindingPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         public void setData(int position) {
             if (dataBeen != null && dataBeen.size() > 0) {
-                bindData();
+                bindData(position);
             } else {
                 OkHttpUtils
                         .get()
@@ -133,11 +134,11 @@ public class FindingPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 dataBeen = findAwardsMovieBean.getData();
                             }
                         });
-                bindData();
+                bindData(position);
             }
         }
 
-        private void bindData() {
+        private void bindData(int position) {
             if (dataBeen != null && dataBeen.size() > 0) {
 
                 for (int i = 0; i < dataBeen.size(); i++) {
@@ -256,6 +257,8 @@ public class FindingPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private Context mContext;
         @BindView(R.id.linearLayout)
         LinearLayout linearLayout;
+        @BindView(R.id.gray_view)
+        View grayView;
         @BindView(R.id.horizontalScrollView)
         HorizontalScrollView horizontalScrollView;
 
@@ -265,7 +268,7 @@ public class FindingPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             this.mContext = mContext;
         }
 
-        public void setData(FindTagDataBean.DataBean dataBean) {
+        public void setData(FindTagDataBean.DataBean dataBean, int position) {
             TextView type = new TextView(mContext);
             if ("cat".equals(dataBean.getTagTypeName())) {
                 type.setText("类型");
@@ -290,6 +293,11 @@ public class FindingPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 textView.setPadding(5, 5, 5, 5);
                 textView.setBackgroundResource(R.drawable.tagtext_shape);
                 linearLayout.addView(textView, params); // 将文本和参数添加到到线性布局中
+            }
+            if (position == 2) {
+                grayView.setVisibility(View.VISIBLE);
+            } else {
+                grayView.setVisibility(View.GONE);
             }
         }
     }

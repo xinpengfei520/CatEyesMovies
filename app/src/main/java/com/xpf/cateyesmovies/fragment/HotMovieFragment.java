@@ -12,7 +12,6 @@ import android.widget.ListView;
 import com.alibaba.fastjson.JSONObject;
 import com.bumptech.glide.Glide;
 import com.xpf.cateyesmovies.R;
-import com.xpf.cateyesmovies.activity.BannerDetailActivity;
 import com.xpf.cateyesmovies.activity.SearchActivity;
 import com.xpf.cateyesmovies.adapter.HotMoviesListViewAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
@@ -226,10 +225,14 @@ public class HotMovieFragment extends BaseFragment {
         banner.setOnBannerClickListener(new OnBannerClickListener() {
             @Override
             public void OnBannerClick(int position) {
-                // 跳转到详情页面
-                Intent intent = new Intent(mContext, BannerDetailActivity.class);
-                intent.putExtra("url", datas.get(position - 1).getUrl());
-                startActivity(intent);
+                Log.e("TAG", "OnBannerClick() position===" + position);
+                // 此处跳转页面的类型不同,应判断不同的类型跳转到对应的页面
+//                if (datas != null && datas.size() > 0) {
+//                    // 跳转到详情页面
+//                    Intent intent = new Intent(mContext, BannerDetailActivity.class);
+//                    intent.putExtra("url", datas.get(position - 1).getUrl());
+//                    mContext.startActivity(intent);
+//                }
             }
         });
     }

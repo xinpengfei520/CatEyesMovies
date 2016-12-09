@@ -31,12 +31,6 @@ public class BannerDetailActivity extends Activity {
     RelativeLayout rlTitle;
     @BindView(R.id.webView)
     WebView webView;
-//    @BindView(R.id.videoView)
-//    VideoView videoView;
-//    @BindView(R.id.indicator)
-//    TabPageIndicator indicator;
-//    @BindView(R.id.viewPager)
-//    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

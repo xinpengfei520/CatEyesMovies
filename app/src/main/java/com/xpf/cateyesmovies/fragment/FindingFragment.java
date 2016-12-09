@@ -12,6 +12,7 @@ import com.xpf.cateyesmovies.activity.SearchActivity;
 import com.xpf.cateyesmovies.adapter.FindingPagerAdapter;
 import com.xpf.cateyesmovies.common.BaseFragment;
 import com.xpf.cateyesmovies.domain.FindTagDataBean;
+import com.xpf.cateyesmovies.ui.DividerItemDecoration;
 import com.xpf.cateyesmovies.utils.AppNetConfig;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -95,6 +96,7 @@ public class FindingFragment extends BaseFragment {
                 }
             });
             mRecyclerView.setLayoutManager(manager);
+            mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL_LIST));
         }
     }
 
