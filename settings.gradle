@@ -1,2 +1,2 @@
-include ':app', ':FlycoTabLayout_Lib', ':banner', ':HeaderAndFooterRecyclerView', ':RecyclerView_library', ':base-adapter-library', ':baseadapter-recyclerview', ':baseAdapter-master'
+include ':app', ':FlycoTabLayout_Lib', ':banner', ':RecyclerView_library'
 include ':HorizontalListView_lib'
